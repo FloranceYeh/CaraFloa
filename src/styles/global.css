@@ -1,0 +1,22 @@
+:root {
+  --primary-size: 56px;
+  --secondary-size: 42px;
+  --primary-background-color: #b2b2b2;
+  --secondary-background-color: #242424;
+  --primary-text-color: #fff;
+  --primary-color: #00aa00;
+  --secondary-color: #99bb99;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.main-wrapper {
+  display: grid;
+  grid-template-columns: 96px 1fr 32px;
+  grid-template-rows: 96px 1fr 96px;
+  width: 100vw;
+  height: 100vh;
+}
