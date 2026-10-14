@@ -8,6 +8,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 <div class="sidebar-wrapper">
   <div class="upper">
     <nav class="menu" aria-label="Main navigation">
+      <span class="active-indicator" aria-hidden="true"></span>
       {menu.map((item) => (
         <a
           class:list={["menu-item", { active: currentPath === item.path }]}
@@ -37,10 +38,10 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
       <button class="theme-color" type="button" aria-expanded="false" aria-controls="theme-slider">
         <i class="fa-solid fa-palette"></i>
       </button>
-      <div class="theme-mode">
+      <button class="theme-mode" type="button" aria-label="Theme settings">
         <i class="fa-solid fa-sun"></i>
         <!-- <i class="fa-solid fa-moon"></i> -->
-      </div>
+      </button>
     </div>
     <div class="settings">
       <i class="fa-solid fa-gear"></i>
@@ -49,11 +50,52 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 </div>
 
 <script>
+  const moveActiveIndicator = (container: HTMLElement, target: HTMLElement | null) => {
+    const indicator = container.querySelector<HTMLElement>(".active-indicator");
+    if (!indicator) return;
+    if (!target) {
+      indicator.classList.remove("is-visible");
+      indicator.classList.remove("has-active-target");
+      return;
+    }
+    const containerRect = container.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    indicator.style.setProperty("--indicator-y", `${targetRect.top - containerRect.top}px`);
+    if (indicator.classList.contains("is-visible")) {
+      indicator.classList.add("has-active-target");
+    }
+    indicator.classList.add("is-visible");
+  };
+
+  const setupSidebarIndicators = () => {
+    const menu = document.querySelector<HTMLElement>(".menu");
+    if (!menu) return;
+    const updateMenuIndicator = () => {
+      const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+      const active =
+        menu.querySelector<HTMLElement>(".menu-item.active") ||
+        [...menu.querySelectorAll<HTMLAnchorElement>(".menu-item")].find(
+          (item) => (new URL(item.href).pathname.replace(/\/$/, "") || "/") === currentPath,
+        );
+      moveActiveIndicator(menu, active ?? null);
+    };
+    menu.addEventListener("click", (event) => {
+      const item = (event.target as HTMLElement).closest<HTMLElement>(".menu-item");
+      if (item) moveActiveIndicator(menu, item);
+    });
+    window.addEventListener("resize", () => {
+      updateMenuIndicator();
+    });
+    window.addEventListener("popstate", updateMenuIndicator);
+    updateMenuIndicator();
+  };
+
   const setupThemeControl = () => {
     const control = document.querySelector<HTMLElement>(".theme-control");
     const button = control?.querySelector<HTMLButtonElement>(".theme-color");
+    const modeButton = control?.querySelector<HTMLButtonElement>(".theme-mode");
     const slider = control?.querySelector<HTMLInputElement>(".color-slider-input");
-    if (!control || !button || !slider) return;
+    if (!control || !button || !modeButton || !slider) return;
 
     const updateThemeColor = () => {
       const hue = Number(slider.value);
@@ -63,13 +105,21 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
     };
     const setOpen = (open: boolean) => {
       control.classList.toggle("is-open", open);
-      button.classList.toggle("active", open);
       button.setAttribute("aria-expanded", String(open));
       slider.parentElement?.setAttribute("aria-hidden", String(!open));
       slider.tabIndex = open ? 0 : -1;
     };
 
-    button.addEventListener("click", () => setOpen(!control.classList.contains("is-open")));
+    button.addEventListener("click", () => {
+      button.classList.add("active");
+      modeButton.classList.remove("active");
+      setOpen(!control.classList.contains("is-open"));
+    });
+    modeButton.addEventListener("click", () => {
+      modeButton.classList.add("active");
+      button.classList.remove("active");
+      setOpen(false);
+    });
     slider.addEventListener("input", updateThemeColor);
     document.addEventListener("pointerdown", (event) => {
       if (!control.contains(event.target as Node)) setOpen(false);
@@ -80,5 +130,6 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
     slider.tabIndex = -1;
     updateThemeColor();
   };
+  setupSidebarIndicators();
   setupThemeControl();
 </script>
