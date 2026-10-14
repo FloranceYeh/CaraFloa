@@ -1,0 +1,15 @@
+---
+import "../styles/components/placeholder-page.css";
+import type { MenuItem } from "../config/menu";
+interface Props {
+  item: MenuItem;
+}
+const { item } = Astro.props;
+---
+
+<main class="placeholder-page" aria-label={item.name}>
+  <div class="placeholder-card">
+    <i class={item.icon} aria-hidden="true"></i>
+    <span>{item.name}</span>
+  </div>
+</main>

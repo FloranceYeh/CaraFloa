@@ -1,96 +1,96 @@
 .sidebar-wrapper {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    justify-items: center;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  justify-items: center;
 }
 .sidebar-wrapper .upper {
-    align-self: start;
+  align-self: start;
 }
 .sidebar-wrapper .upper .menu {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: var(--primary-size);
-    border-radius: 64px;
-    background-color: var(--primary-background-color);
-    padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: var(--primary-size);
+  border-radius: 64px;
+  background-color: var(--primary-background-color);
+  padding: 8px 0;
 }
 .sidebar-wrapper .upper .menu .menu-item {
-    display: grid;
-    place-items: center;
-    width: var(--secondary-size);
-    height: var(--secondary-size);
-    border-radius: 64px;
-    font-size: 1.2rem;
+  display: grid;
+  place-items: center;
+  width: var(--secondary-size);
+  height: var(--secondary-size);
+  border-radius: 64px;
+  font-size: 1.2rem;
 }
 .sidebar-wrapper .upper .menu .menu-item.active {
-    background-color: var(--secondary-background-color);
-    color: var(--primary-text-color);
+  background-color: var(--secondary-background-color);
+  color: var(--primary-text-color);
 }
 .sidebar-wrapper .lower {
-    align-self: end;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
 }
 .sidebar-wrapper .lower .themes {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: var(--primary-size);
-    border-radius: 64px;
-    background-color: var(--primary-background-color);
-    padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: var(--primary-size);
+  border-radius: 64px;
+  background-color: var(--primary-background-color);
+  padding: 8px 0;
 }
 .sidebar-wrapper .lower .themes .theme-color {
-    display: grid;
-    place-items: center;
-    width: var(--secondary-size);
-    height: var(--secondary-size);
-    border-radius: 64px;
-    color: var(--primary-color);
-    font-size: 1.2rem;
+  display: grid;
+  place-items: center;
+  width: var(--secondary-size);
+  height: var(--secondary-size);
+  border-radius: 64px;
+  color: var(--primary-color);
+  font-size: 1.2rem;
 }
 .sidebar-wrapper .lower .themes .theme-color.active {
-    background-color: var(--secondary-background-color);
+  background-color: var(--secondary-background-color);
 }
 .sidebar-wrapper .lower .themes .color-slider {
-    display: grid;
-    place-items: center;
-    width: 12px;
-    background: linear-gradient(#f00, #0f0, #00f);
-    height: 128px;
-    border-radius: 64px;
-    margin: 16px 0;
+  display: grid;
+  place-items: center;
+  width: 12px;
+  background: linear-gradient(#f33, #3f3, #33f);
+  height: 128px;
+  border-radius: 64px;
+  margin: 16px 0;
 }
 .sidebar-wrapper .lower .themes .color-slider .slider-handle {
-    position: relative;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background-color: var(--primary-text-color);
-    transform: translateX(-2px);
-    top: 12px;
-    cursor: pointer;
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--primary-text-color);
+  transform: translateX(-2px);
+  top: 12px;
+  cursor: pointer;
 }
 .sidebar-wrapper .lower .themes .theme-mode {
-    display: grid;
-    place-items: center;
-    width: var(--secondary-size);
-    height: var(--secondary-size);
-    border-radius: 64px;
-    font-size: 1.2rem;
+  display: grid;
+  place-items: center;
+  width: var(--secondary-size);
+  height: var(--secondary-size);
+  border-radius: 64px;
+  font-size: 1.2rem;
 }
 .sidebar-wrapper .lower .settings {
-    display: grid;
-    place-items: center;
-    width: var(--primary-size);
-    height: var(--primary-size);
-    background-color: var(--primary-background-color);
-    border-radius: 64px;
-    font-size: 1.2rem;
+  display: grid;
+  place-items: center;
+  width: var(--primary-size);
+  height: var(--primary-size);
+  background-color: var(--primary-background-color);
+  border-radius: 64px;
+  font-size: 1.2rem;
 }

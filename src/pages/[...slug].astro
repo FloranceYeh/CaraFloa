@@ -1,0 +1,38 @@
+---
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import Topbar from "../components/topbar.astro";
+import Sidebar from "../components/sidebar.astro";
+import PageContent from "../components/page-content.astro";
+
+import { menu, pageBySlug } from "../config/menu";
+import { ClientRouter } from "astro:transitions";
+import { SiteTitle } from "../config/site";
+
+import "../styles/global.css";
+
+export function getStaticPaths() {
+  return menu
+    .filter((item) => item.path !== "/")
+    .map((item) => ({ params: { slug: item.path.slice(1) }, props: { item } }));
+}
+const { item: pathItem } = Astro.props;
+const item = pathItem ?? pageBySlug(Astro.params.slug ?? "");
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{item.name} · {SiteTitle}</title>
+    <ClientRouter />
+  </head>
+  <body>
+    <div class="main-wrapper">
+      <div></div>
+      <Topbar />
+      <div></div>
+      <Sidebar />
+      <PageContent item={item} />
+    </div>
+  </body>
+</html>

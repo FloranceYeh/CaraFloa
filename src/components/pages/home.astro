@@ -1,0 +1,82 @@
+---
+import "../../styles/components/pages/home.css";
+
+import { homeSections } from "../../config/home";
+const defaultIndex = Math.floor(homeSections.length / 2);
+---
+
+<div class="home-view">
+  <div class="home-track" tabindex="0" style={`--active-column: ${defaultIndex}`}>
+    {homeSections.map((section, index) => (
+      <article
+        class="home-card"
+        data-index={index}
+        aria-label={section.title || `Section ${index + 1}`}
+      >
+        {section.image && <img src={section.image} alt="" />}
+        <div class="home-card-body">
+          <span class="home-card-index">{String(index + 1).padStart(2, "0")}</span>
+          {section.title && <h2>{section.title}</h2>}
+          {section.summary && <p>{section.summary}</p>}
+        </div>
+      </article>
+    ))}
+  </div>
+  <div class="home-dots" role="tablist">
+    {homeSections.map((section, index) => (
+      <button
+        class:list={["home-dot", { active: index === defaultIndex }]}
+        type="button"
+        role="tab"
+        aria-label={`Section ${index + 1}`}
+        aria-selected={index === defaultIndex}
+        data-index={index}
+      />
+    ))}
+  </div>
+</div>
+
+<script>
+  const setupHome = () => {
+    const track = document.querySelector<HTMLElement>(".home-track");
+    const cards = [...document.querySelectorAll<HTMLElement>(".home-card")];
+    const dots = [...document.querySelectorAll<HTMLButtonElement>(".home-dot")];
+    if (!track || !cards.length) return;
+    let current = Math.floor(cards.length / 2);
+    const update = (next: number) => {
+      current = Math.max(0, Math.min(cards.length - 1, next));
+      track.style.setProperty("--active-column", String(current));
+      cards.forEach((card, index) => card.setAttribute("aria-hidden", String(index !== current)));
+      dots.forEach((dot, index) => {
+        dot.classList.toggle("active", index === current);
+        dot.setAttribute("aria-selected", String(index === current));
+      });
+    };
+    dots.forEach((dot) => dot.addEventListener("click", () => update(Number(dot.dataset.index))));
+    let startX = 0;
+    track.addEventListener("pointerdown", (event) => {
+      startX = event.clientX;
+      track.setPointerCapture(event.pointerId);
+    });
+    track.addEventListener("pointerup", (event) => {
+      const delta = event.clientX - startX;
+      if (Math.abs(delta) > 40) update(current + (delta < 0 ? 1 : -1));
+    });
+    track.addEventListener(
+      "wheel",
+      (event) => {
+        if (Math.abs(event.deltaX) > Math.abs(event.deltaY) || Math.abs(event.deltaY) > 20) {
+          event.preventDefault();
+          update(current + (event.deltaX + event.deltaY > 0 ? 1 : -1));
+        }
+      },
+      { passive: false },
+    );
+    track.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") update(current + 1);
+      if (event.key === "ArrowLeft") update(current - 1);
+    });
+    update(current);
+  };
+  setupHome();
+</script>

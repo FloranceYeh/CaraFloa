@@ -1,0 +1,25 @@
+.placeholder-page {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--primary-background-color);
+  border-radius: 32px;
+  display: grid;
+  place-items: center;
+}
+.placeholder-card {
+  width: min(80%, 720px);
+  min-height: 320px;
+  border-radius: 28px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 1rem;
+  background: var(--secondary-background-color);
+  color: var(--primary-text-color);
+  font-size: clamp(1.5rem, 4vw, 3rem);
+}
+.placeholder-card i {
+  color: var(--primary-color);
+  font-size: 3rem;
+}

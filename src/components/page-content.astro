@@ -1,0 +1,73 @@
+---
+import "../styles/components/page-content.css";
+
+import { menu, type MenuItem } from "../config/menu";
+import Home from "./pages/home.astro";
+
+interface Props {
+  item?: MenuItem;
+}
+const { item = menu[0] } = Astro.props;
+const activeIndex = Math.max(
+  0,
+  menu.findIndex((entry) => entry.path === item.path),
+);
+---
+
+<main class="page-content" data-page-index={activeIndex}>
+  <div class="page-rail" style={`--active-page: ${activeIndex}`}>
+    {menu.map((entry) => (
+      <section
+        class="page-card"
+        data-page-name={entry.name}
+        data-page-path={entry.path}
+        data-page-index={menu.indexOf(entry)}
+        aria-hidden={entry.path !== item.path}
+      >
+        {entry.name === "Home" ? (
+          <Home />
+        ) : (
+          <div class="placeholder-card">
+            <i class={entry.icon} aria-hidden="true" />
+            <span>{entry.name}</span>
+          </div>
+        )}
+      </section>
+    ))}
+  </div>
+</main>
+
+<script>
+  const setupPageDeck = () => {
+    const content = document.querySelector<HTMLElement>(".page-content");
+    const rail = document.querySelector<HTMLElement>(".page-rail");
+    if (!content || !rail) return;
+    const links = [...document.querySelectorAll<HTMLAnchorElement>(".menu-item[href]")];
+    const moveCamera = (path: string, writeUrl = false) => {
+      const link = links.find((anchor) => new URL(anchor.href).pathname === path);
+      const index = Number(link?.dataset.index ?? 0);
+      rail.style.setProperty("--active-page", String(index));
+      content.dataset.pageIndex = String(index);
+      document
+        .querySelectorAll(".menu-item")
+        .forEach((anchor) =>
+          anchor.classList.toggle("active", (anchor as HTMLAnchorElement).pathname === path),
+        );
+      document
+        .querySelectorAll<HTMLElement>(".page-card")
+        .forEach((card) =>
+          card.setAttribute("aria-hidden", card.dataset.pagePath !== path ? "true" : "false"),
+        );
+      if (writeUrl && window.location.pathname !== path) history.pushState({}, "", path);
+    };
+    links.forEach((link) =>
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        moveCamera(new URL(link.href).pathname, true);
+      }),
+    );
+    window.addEventListener("popstate", () => moveCamera(window.location.pathname));
+    moveCamera(window.location.pathname);
+  };
+  setupPageDeck();
+</script>

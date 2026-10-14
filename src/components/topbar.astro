@@ -3,25 +3,39 @@ import "../styles/components/topbar.css";
 ---
 
 <div class="topbar-wrapper">
-    <div class="brand">
-        <i class="fa-solid fa-house-flood-water"></i>
-        <div class="brand-name">CaraFloa</div>
+  <div class="brand">
+    <i class="fa-solid fa-house-flood-water"></i>
+    <div class="brand-name">CaraFloa</div>
+  </div>
+  <div class="island">
+    <div class="island-container">
+      <div class="clock"></div>
+      <div class="weather">
+        <i class="fa-solid fa-cloud" aria-hidden="true"></i>
+      </div>
     </div>
-    <div class="island">
-        <div class="island-container">
-            <div class="clock">12:00</div>
-            <div class="weather">
-                <i class="fa-solid fa-cloud" aria-hidden="true"></i>
-            </div>
-        </div>
+  </div>
+  <div class="tools">
+    <div class="export">
+      <i class="fa-solid fa-file-export" aria-hidden="true"></i>
+      <div class="hint">Export</div>
     </div>
-    <div class="tools">
-        <div class="export">
-            <i class="fa-solid fa-file-export" aria-hidden="true"></i>
-            <div class="hint">Export</div>
-        </div>
-        <div class="rss">
-            <i class="fa-solid fa-square-rss" aria-hidden="true"></i>
-        </div>
+    <div class="rss">
+      <i class="fa-solid fa-square-rss" aria-hidden="true"></i>
     </div>
+  </div>
 </div>
+
+<script>
+  const clockElement = document.querySelector(".clock");
+  function updateClock() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, "0");
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+    if (clockElement) {
+      clockElement.textContent = `${hours}:${minutes}`;
+    }
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+</script>
