@@ -56,6 +56,13 @@
   margin-top: 0.5rem;
   opacity: 0.8;
 }
+.home-card.is-pending {
+  opacity: 0.58;
+}
+.home-card-pending {
+  color: var(--secondary-color);
+  font-style: italic;
+}
 .dots-container {
   position: absolute;
   bottom: 22px;

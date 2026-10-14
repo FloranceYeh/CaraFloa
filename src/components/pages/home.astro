@@ -1,23 +1,61 @@
 ---
 import "../../styles/components/pages/home.css";
+import {
+  getArticles,
+  articleSection,
+  latestArticleForSection,
+  latestPublishedArticle,
+  sectionArticle,
+  homeSections,
+} from "../../lib/articles";
 
-import { homeSections } from "../../config/home";
-const defaultIndex = Math.floor(homeSections.length / 2);
+const articles = await getArticles();
+const now = new Date();
+const defaultArticle = latestPublishedArticle(articles, now);
+const defaultIndex = Math.max(
+  0,
+  homeSections.findIndex(
+    (section) => section.id === (defaultArticle ? articleSection(defaultArticle) : undefined),
+  ),
+);
+const cards = homeSections.map((section) => {
+  const sectionArticles = sectionArticle(articles, section);
+  const article = latestArticleForSection(articles, section, now);
+  const nextArticle = sectionArticles.find(
+    (entry) => entry.data.publishedAt.getTime() > now.getTime(),
+  );
+  return { section, article, nextArticle };
+});
 ---
 
 <div class="home-view">
   <div class="home-track" tabindex="0" style={`--active-column: ${defaultIndex}`}>
-    {homeSections.map((section, index) => (
+    {cards.map(({ section, article, nextArticle }, index) => (
       <article
-        class="home-card"
+        class:list={["home-card", { "is-pending": !article }]}
         data-index={index}
+        data-section={section.id}
+        data-next-published-at={nextArticle?.data.publishedAt.toISOString()}
         aria-label={section.title || `Section ${index + 1}`}
       >
-        {section.image && <img src={section.image} alt="" />}
         <div class="home-card-body">
           <span class="home-card-index">{String(index + 1).padStart(2, "0")}</span>
-          {section.title && <h2>{section.title}</h2>}
-          {section.summary && <p>{section.summary}</p>}
+          <h2 class="home-section-title">{section.title}</h2>
+          <div class="home-card-content" data-state={article ? "published" : "pending"}>
+            {article ? (
+              <>
+                <a class="home-card-link" href={`/${section.id}/${article.data.id}`}>
+                  <strong>{article.data.title}</strong>
+                </a>
+                <p>{article.data.summary || section.summary}</p>
+                <time datetime={article.data.publishedAt.toISOString()}>
+                  {article.data.publishedAt.toLocaleString("zh-CN")}
+                </time>
+              </>
+            ) : (
+              <p class="home-card-pending">等待更新</p>
+            )}
+          </div>
         </div>
       </article>
     ))}
@@ -37,14 +75,13 @@ const defaultIndex = Math.floor(homeSections.length / 2);
     </div>
   </div>
 </div>
-
 <script>
   const setupHome = () => {
     const track = document.querySelector<HTMLElement>(".home-track");
     const cards = [...document.querySelectorAll<HTMLElement>(".home-card")];
     const dots = [...document.querySelectorAll<HTMLButtonElement>(".home-dot")];
     if (!track || !cards.length) return;
-    let current = Math.floor(cards.length / 2);
+    let current = Number(track.style.getPropertyValue("--active-column")) || 0;
     const update = (next: number) => {
       current = Math.max(0, Math.min(cards.length - 1, next));
       track.style.setProperty("--active-column", String(current));
@@ -52,6 +89,16 @@ const defaultIndex = Math.floor(homeSections.length / 2);
       dots.forEach((dot, index) => {
         dot.classList.toggle("active", index === current);
         dot.setAttribute("aria-selected", String(index === current));
+      });
+    };
+    const refreshPending = () => {
+      const now = Date.now();
+      cards.forEach((card) => {
+        const nextAt = card.dataset.nextPublishedAt
+          ? Date.parse(card.dataset.nextPublishedAt)
+          : NaN;
+        if (!Number.isNaN(nextAt) && nextAt <= now && card.querySelector('[data-state="pending"]'))
+          window.location.reload();
       });
     };
     dots.forEach((dot) => dot.addEventListener("click", () => update(Number(dot.dataset.index))));
@@ -79,6 +126,8 @@ const defaultIndex = Math.floor(homeSections.length / 2);
       if (event.key === "ArrowLeft") update(current - 1);
     });
     update(current);
+    refreshPending();
+    window.setInterval(refreshPending, 30000);
   };
   setupHome();
 </script>

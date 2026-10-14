@@ -1,0 +1,55 @@
+---
+import { getCollection, render } from "astro:content";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import Topbar from "../../components/topbar.astro";
+import Sidebar from "../../components/sidebar.astro";
+import "../../styles/global.css";
+import "../../styles/components/article.css";
+import { SiteTitle } from "../../config/site";
+import { articleSection } from "../../lib/articles";
+
+export async function getStaticPaths() {
+  const articles = await getCollection("articles");
+  return articles.map((article) => ({
+    params: { section: articleSection(article), id: article.data.id },
+    props: { article },
+  }));
+}
+const { article } = Astro.props;
+const { Content } = await render(article);
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{article.data.title} · {SiteTitle}</title>
+  </head>
+  <body>
+    <div class="main-wrapper">
+      <div />
+      <Topbar />
+      <div />
+      <Sidebar />
+      <main class="article-page">
+        <article class="article-card">
+          <a class="article-back" href="/">
+            返回首页
+          </a>
+          <p class="article-section">{articleSection(article)}</p>
+          <h1>{article.data.title}</h1>
+          <time datetime={article.data.publishedAt.toISOString()}>
+            {article.data.publishedAt.toLocaleString("zh-CN")}
+          </time>
+          <div class="article-body">
+            <Content />
+          </div>
+        </article>
+      </main>
+      <div />
+      <div />
+      <div />
+      <div />
+    </div>
+  </body>
+</html>
