@@ -23,13 +23,20 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
   </div>
 
   <div class="lower">
-    <div class="themes">
-      <div class="color-slider">
-        <div class="slider-handle"></div>
+    <div class="theme-control">
+      <div class="color-slider" id="theme-slider" aria-hidden="true">
+        <input
+          class="color-slider-input"
+          type="range"
+          min="0"
+          max="360"
+          value="120"
+          aria-label="Adjust theme color"
+        />
       </div>
-      <div class="theme-color active">
+      <button class="theme-color" type="button" aria-expanded="false" aria-controls="theme-slider">
         <i class="fa-solid fa-palette"></i>
-      </div>
+      </button>
       <div class="theme-mode">
         <i class="fa-solid fa-sun"></i>
         <!-- <i class="fa-solid fa-moon"></i> -->
@@ -40,3 +47,38 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
     </div>
   </div>
 </div>
+
+<script>
+  const setupThemeControl = () => {
+    const control = document.querySelector<HTMLElement>(".theme-control");
+    const button = control?.querySelector<HTMLButtonElement>(".theme-color");
+    const slider = control?.querySelector<HTMLInputElement>(".color-slider-input");
+    if (!control || !button || !slider) return;
+
+    const updateThemeColor = () => {
+      const hue = Number(slider.value);
+      document.documentElement.style.setProperty("--primary-color", `hsl(${hue} 100% 33%)`);
+      document.documentElement.style.setProperty("--secondary-color", `hsl(${hue} 30% 65%)`);
+      slider.style.setProperty("--slider-hue", String(hue));
+    };
+    const setOpen = (open: boolean) => {
+      control.classList.toggle("is-open", open);
+      button.classList.toggle("active", open);
+      button.setAttribute("aria-expanded", String(open));
+      slider.parentElement?.setAttribute("aria-hidden", String(!open));
+      slider.tabIndex = open ? 0 : -1;
+    };
+
+    button.addEventListener("click", () => setOpen(!control.classList.contains("is-open")));
+    slider.addEventListener("input", updateThemeColor);
+    document.addEventListener("pointerdown", (event) => {
+      if (!control.contains(event.target as Node)) setOpen(false);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setOpen(false);
+    });
+    slider.tabIndex = -1;
+    updateThemeColor();
+  };
+  setupThemeControl();
+</script>

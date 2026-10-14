@@ -22,17 +22,19 @@ const defaultIndex = Math.floor(homeSections.length / 2);
       </article>
     ))}
   </div>
-  <div class="home-dots" role="tablist">
-    {homeSections.map((section, index) => (
-      <button
-        class:list={["home-dot", { active: index === defaultIndex }]}
-        type="button"
-        role="tab"
-        aria-label={`Section ${index + 1}`}
-        aria-selected={index === defaultIndex}
-        data-index={index}
-      />
-    ))}
+  <div class="dots-container">
+    <div class="home-dots" role="tablist">
+      {homeSections.map((section, index) => (
+        <button
+          class:list={["home-dot", { active: index === defaultIndex }]}
+          type="button"
+          role="tab"
+          aria-label={`Section ${index + 1}`}
+          aria-selected={index === defaultIndex}
+          data-index={index}
+        />
+      ))}
+    </div>
   </div>
 </div>
 

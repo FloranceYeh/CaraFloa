@@ -53,7 +53,7 @@
 .island .weather {
   font-size: 1.3rem;
   font-weight: bold;
-  color: var(--primary-text-color);
+  color: var(--secondary-color);
   margin: auto;
   display: grid;
   place-items: center;

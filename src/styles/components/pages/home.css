@@ -32,7 +32,6 @@
   display: flex;
   align-items: flex-end;
   overflow: hidden;
-  box-shadow: 0 24px 60px rgb(0 0 0 / 18%);
 }
 .home-card img {
   width: 100%;
@@ -43,7 +42,6 @@
   width: 100%;
   padding: clamp(1.5rem, 4vw, 3.5rem);
   min-height: 35%;
-  background: linear-gradient(transparent, rgb(0 0 0 / 68%));
 }
 .home-card-index {
   opacity: 0.55;
@@ -58,14 +56,23 @@
   margin-top: 0.5rem;
   opacity: 0.8;
 }
-.home-dots {
+.dots-container {
   position: absolute;
   bottom: 22px;
   left: 0;
   right: 0;
   display: flex;
   justify-content: center;
+}
+.home-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 9px;
+  background: var(--secondary-background-color);
+  height: calc(var(--primary-size) * 0.4);
+  padding: 0 12px;
+  border-radius: 32px;
 }
 .home-dot {
   width: 8px;
