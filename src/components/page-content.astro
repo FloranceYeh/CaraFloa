@@ -260,8 +260,9 @@ const mainPages = getMainPages();
       grid.style.setProperty("--camera-x", String(x));
       grid.style.setProperty("--camera-y", String(y));
 
+      const menuPath = /^\/[^/]+\/[^/]+$/.test(path) ? "/" : path;
       menuLinks.forEach((link) => {
-        link.classList.toggle("active", link.pathname === path);
+        link.classList.toggle("active", link.pathname === menuPath);
       });
 
       if (writeUrl && window.location.pathname !== path) {

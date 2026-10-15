@@ -71,11 +71,17 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
     if (!menu) return;
     const updateMenuIndicator = () => {
       const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
-      const active =
-        menu.querySelector<HTMLElement>(".menu-item.active") ||
-        [...menu.querySelectorAll<HTMLAnchorElement>(".menu-item")].find(
-          (item) => (new URL(item.href).pathname.replace(/\/$/, "") || "/") === currentPath,
-        );
+      const menuPath = /^\/[^/]+\/[^/]+$/.test(currentPath) ? "/" : currentPath;
+      const items = [...menu.querySelectorAll<HTMLAnchorElement>(".menu-item")];
+      const active = items.find(
+        (item) => (new URL(item.href).pathname.replace(/\/$/, "") || "/") === menuPath,
+      );
+      items.forEach((item) => {
+        const isActive = item === active;
+        item.classList.toggle("active", isActive);
+        if (isActive) item.setAttribute("aria-current", "page");
+        else item.removeAttribute("aria-current");
+      });
       moveActiveIndicator(menu, active ?? null);
     };
     menu.addEventListener("click", (event) => {
