@@ -19,7 +19,6 @@ const currentIndex = Math.max(
   articles.findIndex((a) => a.data.id === articleId),
 );
 
-// Render all articles
 const renderedArticles = await Promise.all(
   articles.map(async (article) => {
     const { Content } = await render(article);
@@ -121,4 +120,5 @@ const renderedArticles = await Promise.all(
     update(current);
   };
   setupArticle();
+  window.addEventListener("article:loaded", setupArticle);
 </script>

@@ -106,7 +106,6 @@
     transform 200ms cubic-bezier(0.22, 0.75, 0.2, 1) 500ms;
 }
 
-/* 透明交互层 */
 .return-button-hitbox {
   position: absolute;
   top: 40px;

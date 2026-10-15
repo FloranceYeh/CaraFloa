@@ -14,7 +14,6 @@ interface Props {
 const { item = menu[0], section, articleId } = Astro.props;
 const isArticleView = !!(section && articleId);
 
-// 确定当前相机位置
 let cameraX = 0,
   cameraY = 0;
 if (isArticleView) {
@@ -31,7 +30,6 @@ if (isArticleView) {
   }
 }
 
-// 获取主页面列表
 const mainPages = getMainPages();
 ---
 
@@ -44,7 +42,6 @@ const mainPages = getMainPages();
     <canvas class="background-canvas"></canvas>
   </div>
   <div class="page-grid" style={`--camera-x: ${cameraX}; --camera-y: ${cameraY}`}>
-    <!-- 渲染主页面 -->
     {mainPages.map((page) => {
       const menuItem = menu.find((m) => m.path === page.path);
       return (
@@ -68,17 +65,13 @@ const mainPages = getMainPages();
       );
     })}
 
-    <!-- Article 子页面 -->
-    {isArticleView && (
-      <div class="page-cell" data-grid-x="1" data-grid-y="0" data-page-path="article">
-        <Article section={section} articleId={articleId} />
-      </div>
-    )}
+    <div class="page-cell" data-grid-x="1" data-grid-y="0" data-page-path="article">
+      {isArticleView && <Article section={section} articleId={articleId} />}
+    </div>
   </div>
 </main>
 
 <script>
-  // Canvas background drawing (Notch Fill)
   const setupBackground = () => {
     const canvas = document.querySelector<HTMLCanvasElement>(".background-canvas");
     const content = document.querySelector<HTMLElement>(".page-content");
@@ -250,7 +243,6 @@ const mainPages = getMainPages();
 
     const menuLinks = [...document.querySelectorAll<HTMLAnchorElement>(".menu-item[href]")];
 
-    // 从页面单元格读取网格配置
     const pageCells = [...document.querySelectorAll<HTMLElement>(".page-cell")];
     const pageGridMap = new Map<string, { x: number; y: number }>();
     pageCells.forEach((cell) => {
@@ -277,7 +269,6 @@ const mainPages = getMainPages();
       }
     };
 
-    // Menu 导航
     menuLinks.forEach((link) => {
       link.addEventListener("click", (event) => {
         event.preventDefault();
@@ -289,20 +280,42 @@ const mainPages = getMainPages();
       });
     });
 
-    // 点击文章卡片，移动到 article 页面
-    document.addEventListener("click", (event) => {
+    document.addEventListener("click", async (event) => {
       const target = event.target as HTMLElement;
       const link = target.closest<HTMLAnchorElement>("a.home-card-body[href]");
       if (link) {
         event.preventDefault();
         const articlePos = pageGridMap.get("article");
-        if (articlePos) {
-          moveCamera(articlePos.x, articlePos.y, link.href, true);
+        if (!articlePos) return;
+
+        const targetUrl = link.href;
+        moveCamera(articlePos.x, articlePos.y, link.href, false);
+
+        try {
+          const [parsed] = await Promise.all([
+            fetch(targetUrl).then(async (response) => {
+              if (!response.ok) throw new Error(`Article request failed: ${response.status}`);
+              return new DOMParser().parseFromString(await response.text(), "text/html");
+            }),
+            new Promise((resolve) => window.setTimeout(resolve, 50)),
+          ]);
+          const nextArticle = parsed.querySelector<HTMLElement>(".article-view");
+          const articleCell = document.querySelector<HTMLElement>(
+            '.page-cell[data-page-path="article"]',
+          );
+          if (!nextArticle || !articleCell) throw new Error("Article content is missing");
+
+          articleCell.replaceChildren(nextArticle);
+          history.pushState({}, "", new URL(targetUrl).pathname);
+          document.title = parsed.title;
+          window.dispatchEvent(new CustomEvent("article:loaded"));
+        } catch (error) {
+          console.error(error);
+          window.location.assign(targetUrl);
         }
       }
     });
 
-    // 返回按钮 - 使用透明交互层
     const hitbox = document.querySelector<HTMLElement>(".return-button-hitbox");
     hitbox?.addEventListener("click", () => {
       const homePos = pageGridMap.get("/");
@@ -311,11 +324,9 @@ const mainPages = getMainPages();
       }
     });
 
-    // 浏览器前进/后退
     window.addEventListener("popstate", () => {
       const path = window.location.pathname;
       if (path.match(/^\/[^/]+\/[^/]+$/)) {
-        // Article 路径
         const articlePos = pageGridMap.get("article");
         if (articlePos) {
           moveCamera(articlePos.x, articlePos.y, path);
@@ -328,7 +339,6 @@ const mainPages = getMainPages();
       }
     });
 
-    // 初始化位置
     const initialPath = window.location.pathname;
     const initialX = Number(content.dataset.cameraX) || 0;
     const initialY = Number(content.dataset.cameraY) || 0;

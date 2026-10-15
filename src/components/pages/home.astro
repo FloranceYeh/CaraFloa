@@ -98,10 +98,8 @@ const defaultIndex = Math.min(4, cards.length - 1);
       });
     };
 
-    // 点击 dots 切换
     dots.forEach((dot) => dot.addEventListener("click", () => update(Number(dot.dataset.index))));
 
-    // 拖动切换 - 使用独立的状态管理
     let dragState = {
       isDragging: false,
       startX: 0,
@@ -109,7 +107,6 @@ const defaultIndex = Math.min(4, cards.length - 1);
     };
 
     track.addEventListener("mousedown", (event) => {
-      // 如果点击的是链接或其子元素，不处理拖动
       if ((event.target as HTMLElement).closest("a.home-card-body")) {
         return;
       }
@@ -125,7 +122,6 @@ const defaultIndex = Math.min(4, cards.length - 1);
       if (!dragState.isDragging) return;
 
       const deltaX = event.clientX - dragState.startX;
-      // 如果拖动距离超过阈值，阻止默认行为（防止文本选择等）
       if (Math.abs(deltaX) > 10) {
         event.preventDefault();
       }
@@ -137,7 +133,6 @@ const defaultIndex = Math.min(4, cards.length - 1);
       const deltaX = event.clientX - dragState.startX;
       const deltaTime = Date.now() - dragState.startTime;
 
-      // 只有拖动距离超过 80px 才切换
       if (Math.abs(deltaX) > 80) {
         update(current + (deltaX < 0 ? 1 : -1));
       }
@@ -149,7 +144,6 @@ const defaultIndex = Math.min(4, cards.length - 1);
       dragState.isDragging = false;
     });
 
-    // 滚轮切换
     track.addEventListener(
       "wheel",
       (event) => {
@@ -161,7 +155,6 @@ const defaultIndex = Math.min(4, cards.length - 1);
       { passive: false },
     );
 
-    // 键盘切换
     track.addEventListener("keydown", (event) => {
       if (event.key === "ArrowRight") update(current + 1);
       if (event.key === "ArrowLeft") update(current - 1);
