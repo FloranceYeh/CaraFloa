@@ -289,29 +289,25 @@ const mainPages = getMainPages();
         if (!articlePos) return;
 
         const targetUrl = link.href;
-        moveCamera(articlePos.x, articlePos.y, link.href, false);
+        const targetPath = new URL(targetUrl).pathname;
+        const articleCell = document.querySelector<HTMLElement>(
+          '.page-cell[data-page-path="article"]',
+        );
+        if (!articleCell) return;
 
         try {
-          const [parsed] = await Promise.all([
-            fetch(targetUrl).then(async (response) => {
-              if (!response.ok) throw new Error(`Article request failed: ${response.status}`);
-              return new DOMParser().parseFromString(await response.text(), "text/html");
-            }),
-            new Promise((resolve) => window.setTimeout(resolve, 50)),
-          ]);
-          const nextArticle = parsed.querySelector<HTMLElement>(".article-view");
-          const articleCell = document.querySelector<HTMLElement>(
-            '.page-cell[data-page-path="article"]',
-          );
-          if (!nextArticle || !articleCell) throw new Error("Article content is missing");
+          const response = await fetch(targetUrl, { credentials: "same-origin" });
+          if (!response.ok) throw new Error(`Article request failed: ${response.status}`);
+          const parsed = new DOMParser().parseFromString(await response.text(), "text/html");
+          const nextArticle = parsed.querySelector<HTMLElement>(".article-wrapper");
+          if (!nextArticle) throw new Error("Article content is missing");
 
           articleCell.replaceChildren(nextArticle);
-          history.pushState({}, "", new URL(targetUrl).pathname);
+          moveCamera(articlePos.x, articlePos.y, targetPath, false);
+          history.pushState({}, "", targetPath);
           document.title = parsed.title;
-          window.dispatchEvent(new CustomEvent("article:loaded"));
         } catch (error) {
           console.error(error);
-          window.location.assign(targetUrl);
         }
       }
     });
