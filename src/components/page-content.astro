@@ -2,72 +2,339 @@
 import "../styles/components/page-content.css";
 
 import { menu, type MenuItem } from "../config/menu";
+import { pageGrid, getPageConfig, getMainPages } from "../config/pages";
 import Home from "./pages/home.astro";
+import Article from "./pages/article.astro";
 
 interface Props {
   item?: MenuItem;
+  section?: string;
+  articleId?: string;
 }
-const { item = menu[0] } = Astro.props;
-const activeIndex = Math.max(
-  0,
-  menu.findIndex((entry) => entry.path === item.path),
-);
+const { item = menu[0], section, articleId } = Astro.props;
+const isArticleView = !!(section && articleId);
+
+// 确定当前相机位置
+let cameraX = 0,
+  cameraY = 0;
+if (isArticleView) {
+  const articlePage = getPageConfig("article");
+  if (articlePage) {
+    cameraX = articlePage.gridX;
+    cameraY = articlePage.gridY;
+  }
+} else {
+  const currentPage = getPageConfig(item.path);
+  if (currentPage) {
+    cameraX = currentPage.gridX;
+    cameraY = currentPage.gridY;
+  }
+}
+
+// 获取主页面列表
+const mainPages = getMainPages();
 ---
 
-<main class="page-content" data-page-index={activeIndex}>
-  <div class="page-rail" style={`--active-page: ${activeIndex}`}>
-    {menu.map((entry) => (
-      <section
-        class="page-card"
-        data-page-name={entry.name}
-        data-page-path={entry.path}
-        data-page-index={menu.indexOf(entry)}
-        aria-hidden={entry.path !== item.path}
-      >
-        {entry.name === "Home" ? (
-          <Home />
-        ) : (
-          <div class="placeholder-card">
-            <i class={entry.icon} aria-hidden="true" />
-            <span>{entry.name}</span>
-          </div>
-        )}
-      </section>
-    ))}
+<main class="page-content" data-camera-x={cameraX} data-camera-y={cameraY}>
+  <button class="return-button" aria-label="返回">
+    <i class="fa-solid fa-chevron-left"></i>
+  </button>
+  <div class="return-button-hitbox"></div>
+  <div class="page-background">
+    <canvas class="background-canvas"></canvas>
+  </div>
+  <div class="page-grid" style={`--camera-x: ${cameraX}; --camera-y: ${cameraY}`}>
+    <!-- 渲染主页面 -->
+    {mainPages.map((page) => {
+      const menuItem = menu.find((m) => m.path === page.path);
+      return (
+        <div
+          class="page-cell"
+          data-grid-x={page.gridX}
+          data-grid-y={page.gridY}
+          data-page-path={page.path}
+        >
+          {page.path === "/" ? (
+            <Home />
+          ) : (
+            <div class="page-cell-content">
+              <div class="placeholder-card">
+                {menuItem && <i class={menuItem.icon} aria-hidden="true"></i>}
+                <span>{page.name}</span>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    })}
+
+    <!-- Article 子页面 -->
+    {isArticleView && (
+      <div class="page-cell" data-grid-x="1" data-grid-y="0" data-page-path="article">
+        <Article section={section} articleId={articleId} />
+      </div>
+    )}
   </div>
 </main>
 
 <script>
-  const setupPageDeck = () => {
+  // Canvas background drawing (Notch Fill)
+  const setupBackground = () => {
+    const canvas = document.querySelector<HTMLCanvasElement>(".background-canvas");
     const content = document.querySelector<HTMLElement>(".page-content");
-    const rail = document.querySelector<HTMLElement>(".page-rail");
-    if (!content || !rail) return;
-    const links = [...document.querySelectorAll<HTMLAnchorElement>(".menu-item[href]")];
-    const moveCamera = (path: string, writeUrl = false) => {
-      const link = links.find((anchor) => new URL(anchor.href).pathname === path);
-      const index = Number(link?.dataset.index ?? 0);
-      rail.style.setProperty("--active-page", String(index));
-      content.dataset.pageIndex = String(index);
-      document
-        .querySelectorAll(".menu-item")
-        .forEach((anchor) =>
-          anchor.classList.toggle("active", (anchor as HTMLAnchorElement).pathname === path),
-        );
-      document
-        .querySelectorAll<HTMLElement>(".page-card")
-        .forEach((card) =>
-          card.setAttribute("aria-hidden", card.dataset.pagePath !== path ? "true" : "false"),
-        );
-      if (writeUrl && window.location.pathname !== path) history.pushState({}, "", path);
+    const returnBtn = document.querySelector<HTMLElement>(".return-button");
+    const hitbox = document.querySelector<HTMLElement>(".return-button-hitbox");
+    if (!canvas || !content) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let notchProgress = 0;
+    let animating = false;
+    let animationFrame: number;
+
+    const shapePath = (
+      ctx: CanvasRenderingContext2D,
+      W: number,
+      H: number,
+      R0: number,
+      nw: number,
+      nh: number,
+      rf: number,
+    ) => {
+      const R = Math.max(0, Math.min(R0, W / 2, H / 2));
+      ctx.beginPath();
+      ctx.moveTo(W - R, 0);
+      ctx.arc(W - R, R, R, -Math.PI / 2, 0);
+      ctx.arc(W - R, H - R, R, 0, Math.PI / 2);
+      ctx.arc(R, H - R, R, Math.PI / 2, Math.PI);
+
+      const cx = nw - rf,
+        cy = nh - rf,
+        rho = R + rf;
+      const inD = (x: number, y: number) =>
+        x < cx + rho && y < cy + rho && (x <= cx || y <= cy || Math.hypot(x - cx, y - cy) < rho);
+
+      if (!(nw > 0 && nh > 0) || !inD(R, R)) {
+        ctx.arc(R, R, R, Math.PI, 1.5 * Math.PI);
+        ctx.closePath();
+        return;
+      }
+
+      let yB: number, thB: number;
+      if (R <= cx) {
+        yB = cy + rho;
+        thB = -Math.PI / 2;
+      } else {
+        const dx = R - cx;
+        yB = cy + Math.sqrt(rho * rho - dx * dx);
+        thB = Math.atan2(cy - yB, cx - R);
+      }
+
+      let xA: number, thA: number;
+      if (R <= cy) {
+        xA = cx + rho;
+        thA = -Math.PI;
+      } else {
+        const dy = R - cy;
+        xA = cx + Math.sqrt(rho * rho - dy * dy);
+        thA = Math.atan2(cy - R, cx - xA);
+      }
+
+      if (thA > 0) thA -= 2 * Math.PI;
+      if (thB > 0) thB -= 2 * Math.PI;
+
+      ctx.lineTo(0, yB);
+      ctx.arc(R, yB, R, -Math.PI, thB);
+      if (rf > 0) ctx.arc(cx, cy, rf, thB + Math.PI, thA + Math.PI, true);
+      else ctx.lineTo(nw, nh);
+      ctx.arc(xA, R, R, thA, -Math.PI / 2);
+      ctx.closePath();
     };
-    links.forEach((link) =>
+
+    const easeInOutCubic = (t: number) =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    const draw = () => {
+      const dpr = devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      const w = rect.width,
+        h = rect.height;
+
+      if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) {
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(h * dpr);
+      }
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+
+      const R = 32;
+      const maxNotchW = 72;
+      const maxNotchH = 72;
+      const rf = 24;
+
+      const progress = easeInOutCubic(notchProgress);
+      const notchW = maxNotchW * progress;
+      const notchH = maxNotchH * progress;
+
+      shapePath(ctx, w, h, R, notchW, notchH, rf);
+
+      const bgColor = getComputedStyle(document.documentElement)
+        .getPropertyValue("--primary-background-color")
+        .trim();
+      ctx.fillStyle = bgColor || "#ffffff";
+      ctx.fill();
+
+      if (returnBtn) {
+        returnBtn.style.left = `36px`;
+        returnBtn.style.top = `36px`;
+      }
+    };
+
+    const animateNotch = (targetProgress: number, duration = 500) => {
+      if (animating) cancelAnimationFrame(animationFrame);
+
+      const startProgress = notchProgress;
+      const startTime = performance.now();
+      animating = true;
+
+      const animate = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const t = Math.min(elapsed / duration, 1);
+        notchProgress = startProgress + (targetProgress - startProgress) * easeInOutCubic(t);
+        draw();
+
+        if (t < 1) {
+          animationFrame = requestAnimationFrame(animate);
+        } else {
+          animating = false;
+        }
+      };
+      animationFrame = requestAnimationFrame(animate);
+    };
+
+    const updateNotch = (cameraX: number) => {
+      const targetProgress = cameraX > 0 ? 1 : 0;
+      animateNotch(targetProgress);
+      if (returnBtn && hitbox) {
+        if (cameraX > 0) {
+          returnBtn.classList.add("visible");
+          hitbox.classList.add("visible");
+        } else {
+          returnBtn.classList.remove("visible");
+          hitbox.classList.remove("visible");
+        }
+      }
+    };
+
+    draw();
+    updateNotch(Number(content.dataset.cameraX) || 0);
+
+    const observer = new MutationObserver(() => {
+      updateNotch(Number(content.dataset.cameraX) || 0);
+    });
+    observer.observe(content, { attributes: true, attributeFilter: ["data-camera-x"] });
+
+    window.addEventListener("resize", draw);
+
+    const mediaQuery = matchMedia("(prefers-color-scheme: dark)");
+    mediaQuery.addEventListener("change", draw);
+  };
+
+  const setupPageGrid = () => {
+    const content = document.querySelector<HTMLElement>(".page-content");
+    const grid = document.querySelector<HTMLElement>(".page-grid");
+    const returnBtn = document.querySelector<HTMLElement>(".return-button");
+    if (!content || !grid) return;
+
+    const menuLinks = [...document.querySelectorAll<HTMLAnchorElement>(".menu-item[href]")];
+
+    // 从页面单元格读取网格配置
+    const pageCells = [...document.querySelectorAll<HTMLElement>(".page-cell")];
+    const pageGridMap = new Map<string, { x: number; y: number }>();
+    pageCells.forEach((cell) => {
+      const path = cell.dataset.pagePath;
+      const x = Number(cell.dataset.gridX);
+      const y = Number(cell.dataset.gridY);
+      if (path) {
+        pageGridMap.set(path, { x, y });
+      }
+    });
+
+    const moveCamera = (x: number, y: number, path: string, writeUrl = false) => {
+      content.dataset.cameraX = String(x);
+      content.dataset.cameraY = String(y);
+      grid.style.setProperty("--camera-x", String(x));
+      grid.style.setProperty("--camera-y", String(y));
+
+      menuLinks.forEach((link) => {
+        link.classList.toggle("active", link.pathname === path);
+      });
+
+      if (writeUrl && window.location.pathname !== path) {
+        history.pushState({}, "", path);
+      }
+    };
+
+    // Menu 导航
+    menuLinks.forEach((link) => {
       link.addEventListener("click", (event) => {
         event.preventDefault();
-        moveCamera(new URL(link.href).pathname, true);
-      }),
-    );
-    window.addEventListener("popstate", () => moveCamera(window.location.pathname));
-    moveCamera(window.location.pathname);
+        const path = new URL(link.href).pathname;
+        const gridPos = pageGridMap.get(path);
+        if (gridPos) {
+          moveCamera(gridPos.x, gridPos.y, path, true);
+        }
+      });
+    });
+
+    // 点击文章卡片，移动到 article 页面
+    document.addEventListener("click", (event) => {
+      const target = event.target as HTMLElement;
+      const link = target.closest<HTMLAnchorElement>("a.home-card-body[href]");
+      if (link) {
+        event.preventDefault();
+        const articlePos = pageGridMap.get("article");
+        if (articlePos) {
+          moveCamera(articlePos.x, articlePos.y, link.href, true);
+        }
+      }
+    });
+
+    // 返回按钮 - 使用透明交互层
+    const hitbox = document.querySelector<HTMLElement>(".return-button-hitbox");
+    hitbox?.addEventListener("click", () => {
+      const homePos = pageGridMap.get("/");
+      if (homePos) {
+        moveCamera(homePos.x, homePos.y, "/", true);
+      }
+    });
+
+    // 浏览器前进/后退
+    window.addEventListener("popstate", () => {
+      const path = window.location.pathname;
+      if (path.match(/^\/[^/]+\/[^/]+$/)) {
+        // Article 路径
+        const articlePos = pageGridMap.get("article");
+        if (articlePos) {
+          moveCamera(articlePos.x, articlePos.y, path);
+        }
+      } else {
+        const gridPos = pageGridMap.get(path);
+        if (gridPos) {
+          moveCamera(gridPos.x, gridPos.y, path);
+        }
+      }
+    });
+
+    // 初始化位置
+    const initialPath = window.location.pathname;
+    const initialX = Number(content.dataset.cameraX) || 0;
+    const initialY = Number(content.dataset.cameraY) || 0;
+    moveCamera(initialX, initialY, initialPath);
   };
-  setupPageDeck();
+
+  setupBackground();
+  setupPageGrid();
 </script>

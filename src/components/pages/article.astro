@@ -1,0 +1,124 @@
+---
+import "../../styles/components/pages/article.css";
+import { render } from "astro:content";
+import { getArticles, sectionArticle, homeSections } from "../../lib/articles";
+
+interface Props {
+  section: string;
+  articleId: string;
+}
+
+const { section, articleId } = Astro.props;
+const allArticles = await getArticles();
+const sectionData = homeSections.find((s) => s.id === section);
+const articles = sectionArticle(allArticles, sectionData!).filter(
+  (a) => a.data.publishedAt.getTime() <= Date.now(),
+);
+const currentIndex = Math.max(
+  0,
+  articles.findIndex((a) => a.data.id === articleId),
+);
+
+// Render all articles
+const renderedArticles = await Promise.all(
+  articles.map(async (article) => {
+    const { Content } = await render(article);
+    return { article, Content };
+  }),
+);
+---
+
+<div class="article-view">
+  <div class="article-track" tabindex="0" style={`--active-article: ${currentIndex}`}>
+    {renderedArticles.map(({ article, Content }, index) => (
+      <article
+        class:list={["article-card", { "is-active": index === currentIndex }]}
+        data-index={index}
+        data-article-id={article.data.id}
+        aria-label={article.data.title}
+      >
+        <div class="article-card-body">
+          <div class="article-header">
+            <span class="article-section-label">{sectionData?.title}</span>
+            <span class="article-index">
+              {String(index + 1).padStart(2, "0")} / {String(articles.length).padStart(2, "0")}
+            </span>
+          </div>
+          <h1 class="article-title">{article.data.title}</h1>
+          {article.data.summary && <p class="article-summary">{article.data.summary}</p>}
+          <time class="article-date" datetime={article.data.publishedAt.toISOString()}>
+            {article.data.publishedAt.toLocaleString("zh-CN")}
+          </time>
+          <div class="article-content">
+            <Content />
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+  <div class="article-nav">
+    <button class="article-nav-btn prev" aria-label="上一篇">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button class="article-nav-btn next" aria-label="下一篇">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  </div>
+</div>
+
+<script>
+  const setupArticle = () => {
+    const track = document.querySelector<HTMLElement>(".article-track");
+    const cards = [...document.querySelectorAll<HTMLElement>(".article-card")];
+    const prevBtn = document.querySelector<HTMLButtonElement>(".article-nav-btn.prev");
+    const nextBtn = document.querySelector<HTMLButtonElement>(".article-nav-btn.next");
+    if (!track || !cards.length) return;
+
+    let current = Number(track.style.getPropertyValue("--active-article")) || 0;
+
+    const update = (next: number) => {
+      current = Math.max(0, Math.min(cards.length - 1, next));
+      track.style.setProperty("--active-article", String(current));
+      cards.forEach((card, index) => {
+        const isActive = index === current;
+        card.classList.toggle("is-active", isActive);
+        card.setAttribute("aria-hidden", String(!isActive));
+      });
+
+      if (prevBtn) prevBtn.disabled = current === 0;
+      if (nextBtn) nextBtn.disabled = current === cards.length - 1;
+    };
+
+    prevBtn?.addEventListener("click", () => update(current - 1));
+    nextBtn?.addEventListener("click", () => update(current + 1));
+
+    let startX = 0;
+    track.addEventListener("pointerdown", (event) => {
+      startX = event.clientX;
+      track.setPointerCapture(event.pointerId);
+    });
+    track.addEventListener("pointerup", (event) => {
+      const delta = event.clientX - startX;
+      if (Math.abs(delta) > 40) update(current + (delta < 0 ? 1 : -1));
+    });
+
+    track.addEventListener(
+      "wheel",
+      (event) => {
+        if (Math.abs(event.deltaX) > Math.abs(event.deltaY) || Math.abs(event.deltaY) > 20) {
+          event.preventDefault();
+          update(current + (event.deltaX + event.deltaY > 0 ? 1 : -1));
+        }
+      },
+      { passive: false },
+    );
+
+    track.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") update(current + 1);
+      if (event.key === "ArrowLeft") update(current - 1);
+    });
+
+    update(current);
+  };
+  setupArticle();
+</script>

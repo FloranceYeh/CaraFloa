@@ -1,62 +1,51 @@
 ---
 import "../../styles/components/pages/home.css";
-import {
-  getArticles,
-  articleSection,
-  latestArticleForSection,
-  latestPublishedArticle,
-  sectionArticle,
-  homeSections,
-} from "../../lib/articles";
+import { homeSections } from "../../config/home";
+import { getArticles, latestArticleForSection, sectionArticle } from "../../lib/articles";
 
-const articles = await getArticles();
 const now = new Date();
-const defaultArticle = latestPublishedArticle(articles, now);
-const defaultIndex = Math.max(
-  0,
-  homeSections.findIndex(
-    (section) => section.id === (defaultArticle ? articleSection(defaultArticle) : undefined),
-  ),
-);
-const cards = homeSections.map((section) => {
-  const sectionArticles = sectionArticle(articles, section);
-  const article = latestArticleForSection(articles, section, now);
-  const nextArticle = sectionArticles.find(
-    (entry) => entry.data.publishedAt.getTime() > now.getTime(),
-  );
-  return { section, article, nextArticle };
-});
+const articles = await getArticles();
+const cards = homeSections.map((section) => ({
+  section,
+  article: latestArticleForSection(articles, section, now),
+  nextArticle: sectionArticle(articles, section)
+    .filter((a) => a.data.publishedAt.getTime() > now.getTime())
+    .sort((a, b) => a.data.publishedAt.getTime() - b.data.publishedAt.getTime())[0],
+}));
+const defaultIndex = Math.min(4, cards.length - 1);
 ---
 
 <div class="home-view">
   <div class="home-track" tabindex="0" style={`--active-column: ${defaultIndex}`}>
     {cards.map(({ section, article, nextArticle }, index) => (
       <article
-        class:list={["home-card", { "is-pending": !article }]}
+        class:list={["home-card", { "is-active": index === defaultIndex, "is-pending": !article }]}
         data-index={index}
         data-section={section.id}
         data-next-published-at={nextArticle?.data.publishedAt.toISOString()}
         aria-label={section.title || `Section ${index + 1}`}
       >
-        <div class="home-card-body">
-          <span class="home-card-index">{String(index + 1).padStart(2, "0")}</span>
-          <h2 class="home-section-title">{section.title}</h2>
-          <div class="home-card-content" data-state={article ? "published" : "pending"}>
-            {article ? (
-              <>
-                <a class="home-card-link" href={`/${section.id}/${article.data.id}`}>
-                  <strong>{article.data.title}</strong>
-                </a>
-                <p>{article.data.summary || section.summary}</p>
-                <time datetime={article.data.publishedAt.toISOString()}>
-                  {article.data.publishedAt.toLocaleString("zh-CN")}
-                </time>
-              </>
-            ) : (
+        {article ? (
+          <a class="home-card-body" href={`/${section.id}/${article.data.id}`}>
+            <span class="home-card-index">{String(index + 1).padStart(2, "0")}</span>
+            <h2 class="home-section-title">{section.title}</h2>
+            <div class="home-card-content" data-state="published">
+              <strong class="home-card-title">{article.data.title}</strong>
+              <p>{article.data.summary || section.summary}</p>
+              <time datetime={article.data.publishedAt.toISOString()}>
+                {article.data.publishedAt.toLocaleString("zh-CN")}
+              </time>
+            </div>
+          </a>
+        ) : (
+          <div class="home-card-body">
+            <span class="home-card-index">{String(index + 1).padStart(2, "0")}</span>
+            <h2 class="home-section-title">{section.title}</h2>
+            <div class="home-card-content" data-state="pending">
               <p class="home-card-pending">等待更新</p>
-            )}
+            </div>
           </div>
-        </div>
+        )}
       </article>
     ))}
   </div>
@@ -81,16 +70,23 @@ const cards = homeSections.map((section) => {
     const cards = [...document.querySelectorAll<HTMLElement>(".home-card")];
     const dots = [...document.querySelectorAll<HTMLButtonElement>(".home-dot")];
     if (!track || !cards.length) return;
+
     let current = Number(track.style.getPropertyValue("--active-column")) || 0;
+
     const update = (next: number) => {
       current = Math.max(0, Math.min(cards.length - 1, next));
       track.style.setProperty("--active-column", String(current));
-      cards.forEach((card, index) => card.setAttribute("aria-hidden", String(index !== current)));
+      cards.forEach((card, index) => {
+        const isActive = index === current;
+        card.classList.toggle("is-active", isActive);
+        card.setAttribute("aria-hidden", String(!isActive));
+      });
       dots.forEach((dot, index) => {
         dot.classList.toggle("active", index === current);
         dot.setAttribute("aria-selected", String(index === current));
       });
     };
+
     const refreshPending = () => {
       const now = Date.now();
       cards.forEach((card) => {
@@ -101,16 +97,59 @@ const cards = homeSections.map((section) => {
           window.location.reload();
       });
     };
+
+    // 点击 dots 切换
     dots.forEach((dot) => dot.addEventListener("click", () => update(Number(dot.dataset.index))));
-    let startX = 0;
-    track.addEventListener("pointerdown", (event) => {
-      startX = event.clientX;
-      track.setPointerCapture(event.pointerId);
+
+    // 拖动切换 - 使用独立的状态管理
+    let dragState = {
+      isDragging: false,
+      startX: 0,
+      startTime: 0,
+    };
+
+    track.addEventListener("mousedown", (event) => {
+      // 如果点击的是链接或其子元素，不处理拖动
+      if ((event.target as HTMLElement).closest("a.home-card-body")) {
+        return;
+      }
+
+      dragState = {
+        isDragging: true,
+        startX: event.clientX,
+        startTime: Date.now(),
+      };
     });
-    track.addEventListener("pointerup", (event) => {
-      const delta = event.clientX - startX;
-      if (Math.abs(delta) > 40) update(current + (delta < 0 ? 1 : -1));
+
+    track.addEventListener("mousemove", (event) => {
+      if (!dragState.isDragging) return;
+
+      const deltaX = event.clientX - dragState.startX;
+      // 如果拖动距离超过阈值，阻止默认行为（防止文本选择等）
+      if (Math.abs(deltaX) > 10) {
+        event.preventDefault();
+      }
     });
+
+    track.addEventListener("mouseup", (event) => {
+      if (!dragState.isDragging) return;
+
+      const deltaX = event.clientX - dragState.startX;
+      const deltaTime = Date.now() - dragState.startTime;
+
+      // 只有拖动距离超过 80px 才切换
+      if (Math.abs(deltaX) > 80) {
+        update(current + (deltaX < 0 ? 1 : -1));
+      }
+
+      dragState.isDragging = false;
+    });
+
+    track.addEventListener("mouseleave", () => {
+      dragState.isDragging = false;
+    });
+
+    // 滚轮切换
     track.addEventListener(
       "wheel",
       (event) => {
@@ -121,10 +160,13 @@ const cards = homeSections.map((section) => {
       },
       { passive: false },
     );
+
+    // 键盘切换
     track.addEventListener("keydown", (event) => {
       if (event.key === "ArrowRight") update(current + 1);
       if (event.key === "ArrowLeft") update(current - 1);
     });
+
     update(current);
     refreshPending();
     window.setInterval(refreshPending, 30000);

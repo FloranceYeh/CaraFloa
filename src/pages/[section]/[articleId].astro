@@ -1,0 +1,48 @@
+---
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import Topbar from "../../components/topbar.astro";
+import Sidebar from "../../components/sidebar.astro";
+import PageContent from "../../components/page-content.astro";
+import "../../styles/global.css";
+
+import { SiteTitle } from "../../config/site";
+import { getArticles, articleSection, homeSections } from "../../lib/articles";
+
+export async function getStaticPaths() {
+  const articles = await getArticles();
+  return articles
+    .filter((article) => article.data.publishedAt.getTime() <= Date.now())
+    .map((article) => {
+      const section = articleSection(article);
+      return {
+        params: {
+          section,
+          articleId: article.data.id,
+        },
+        props: {
+          section,
+          articleId: article.data.id,
+          article,
+        },
+      };
+    });
+}
+
+const { section, articleId, article } = Astro.props;
+const sectionData = homeSections.find((s) => s.id === section);
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{article.data.title} · {sectionData?.title} · {SiteTitle}</title>
+  </head>
+  <body>
+    <div class="main-wrapper">
+      <Topbar />
+      <Sidebar />
+      <PageContent section={section} articleId={articleId} />
+    </div>
+  </body>
+</html>

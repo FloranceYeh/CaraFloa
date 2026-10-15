@@ -2,6 +2,7 @@
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
+  grid-area: topbar;
 }
 .brand {
   justify-self: start;

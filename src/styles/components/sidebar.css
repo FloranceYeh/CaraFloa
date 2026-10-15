@@ -2,6 +2,7 @@
   display: grid;
   grid-template-rows: 1fr 1fr;
   justify-items: center;
+  grid-area: sidebar;
 }
 .sidebar-wrapper .upper {
   align-self: start;
