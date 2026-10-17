@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="200 150 400 400">
+  <defs>
+    <linearGradient id="mintGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#78ff73"/>
+      <stop offset="45%" stop-color="#2dd486"/>
+      <stop offset="100%" stop-color="#0f764b"/>
+    </linearGradient>
+    <linearGradient id="irisGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f83838"/>
+      <stop offset="50%" stop-color="#dc81f8"/>
+      <stop offset="100%" stop-color="#fc84dc"/>
+    </linearGradient>
+    <filter id="shadowUnder" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <g transform="translate(400 350)" filter="url(#shadowUnder)">
+    <path
+      d="M20-110C100-110 145-60 145 15c0 65-50 115-130 115-80 0-130-45-130-115"
+      fill="none"
+      stroke="url(#irisGrad)"
+      stroke-width="44"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M85-75C-25-125-135-65-135 25c0 90 90 130 170 130 60 0 95-35 100-75"
+      fill="none"
+      stroke="url(#mintGrad)"
+      stroke-width="44"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path d="M-15 10H95" fill="none" stroke="url(#mintGrad)" stroke-width="40" stroke-linecap="round"/>
+    <path d="M10-60h95" fill="none" stroke="url(#irisGrad)" stroke-width="36" stroke-linecap="round"/>
+    <path
+      d="M85-75C-25-125-135-65-135 25c0 90 90 130 170 130"
+      fill="none"
+      stroke="url(#sheenGrad)"
+      stroke-width="44"
+      stroke-linecap="round"
+    />
+  </g>
+</svg>

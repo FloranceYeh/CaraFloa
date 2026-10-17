@@ -4,12 +4,21 @@ import { getArticles, latestPublishedPeriod } from "../lib/articles";
 
 const articles = await getArticles();
 const currentPeriod = latestPublishedPeriod(articles);
+const brandSplitIndex = Math.ceil(SiteTitle.length / 2);
+
+import { SiteTitle } from "../config/site";
+import { SiteLogo } from "../config/site";
 ---
 
 <div class="topbar-wrapper">
   <div class="brand">
-    <i class="fa-solid fa-house-flood-water"></i>
-    <div class="brand-name">CaraFloa</div>
+    <div class="brand-logo">
+      <img src={SiteLogo} alt={SiteTitle} />
+    </div>
+    <div class="brand-name" aria-label={SiteTitle}>
+      <span class="brand-name-first">{SiteTitle.slice(0, brandSplitIndex)}</span>
+      <span class="brand-name-second">{SiteTitle.slice(brandSplitIndex)}</span>
+    </div>
   </div>
   <div class="island">
     <div class="island-container">

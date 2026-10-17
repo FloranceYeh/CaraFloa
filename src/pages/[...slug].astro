@@ -7,6 +7,7 @@ import PageContent from "../components/page-content.astro";
 import { menu, pageBySlug } from "../config/menu";
 import { ClientRouter } from "astro:transitions";
 import { SiteTitle } from "../config/site";
+import { SiteLogo } from "../config/site";
 
 import "../styles/global.css";
 
@@ -23,6 +24,7 @@ const item = pathItem ?? pageBySlug(Astro.params.slug ?? "");
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href={SiteLogo} />
     <link rel="alternate" type="application/rss+xml" title={`${SiteTitle} RSS`} href="/rss.xml" />
     <title>{item.name} · {SiteTitle}</title>
     <ClientRouter />
