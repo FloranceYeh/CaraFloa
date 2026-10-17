@@ -23,17 +23,17 @@ const Content = article ? (await render(article)).Content : undefined;
 <div class="article-wrapper">
   <div class="toolbar">
     <div class="upper-tools">
-      <div class="toolbar-item to-top">
+      <button class="toolbar-item to-top" type="button" aria-label="回到顶部" title="回到顶部">
         <i class="fa-solid fa-arrow-up"></i>
-      </div>
-      <div class="toolbar-item to-bottom">
+      </button>
+      <button class="toolbar-item to-bottom" type="button" aria-label="回到底部" title="回到底部">
         <i class="fa-solid fa-arrow-down"></i>
-      </div>
+      </button>
     </div>
     <div class="lower-tools">
-      <div class="toolbar-item zoom">
-        <i class="fa-solid fa-down-left-and-up-right-to-center"></i>
-      </div>
+      <button class="toolbar-item discuss" type="button" aria-label="讨论" title="讨论">
+        <i class="fa-solid fa-message"></i>
+      </button>
     </div>
   </div>
 

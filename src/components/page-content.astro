@@ -243,6 +243,28 @@ const mainPages = getMainPages();
 
     const menuLinks = [...document.querySelectorAll<HTMLAnchorElement>(".menu-item[href]")];
 
+    const setupArticleToolbar = (root: ParentNode) => {
+      root.querySelectorAll<HTMLElement>(".articles").forEach((articles) => {
+        const upperTools = articles
+          .closest<HTMLElement>(".article-wrapper")
+          ?.querySelector<HTMLElement>(".upper-tools");
+        if (!upperTools) return;
+
+        const updateToolbar = () => {
+          const maxScrollTop = Math.max(0, articles.scrollHeight - articles.clientHeight);
+          const atTop = articles.scrollTop <= 1;
+          const atBottom = articles.scrollTop >= maxScrollTop - 1;
+          upperTools.classList.toggle("is-at-top", atTop);
+          upperTools.classList.toggle("is-at-bottom", atBottom);
+        };
+
+        articles.addEventListener("scroll", updateToolbar, { passive: true });
+        updateToolbar();
+      });
+    };
+
+    setupArticleToolbar(content);
+
     const pageCells = [...document.querySelectorAll<HTMLElement>(".page-cell")];
     const pageGridMap = new Map<string, { x: number; y: number }>();
     pageCells.forEach((cell) => {
@@ -283,6 +305,26 @@ const mainPages = getMainPages();
 
     document.addEventListener("click", async (event) => {
       const target = event.target as HTMLElement;
+
+      const toolbarButton = target.closest<HTMLButtonElement>(".article-wrapper .toolbar-item");
+      if (toolbarButton) {
+        const isTop = toolbarButton.classList.contains("to-top");
+        const isBottom = toolbarButton.classList.contains("to-bottom");
+        if (!isTop && !isBottom) return;
+
+        const articles = toolbarButton
+          .closest<HTMLElement>(".article-wrapper")
+          ?.querySelector<HTMLElement>(".articles");
+        if (!articles) return;
+
+        const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        articles.scrollTo({
+          top: isBottom ? articles.scrollHeight : 0,
+          behavior: reducedMotion ? "auto" : "smooth",
+        });
+        return;
+      }
+
       const link = target.closest<HTMLAnchorElement>("a.home-card-body[href]");
       if (link) {
         event.preventDefault();
@@ -304,6 +346,7 @@ const mainPages = getMainPages();
           if (!nextArticle) throw new Error("Article content is missing");
 
           articleCell.replaceChildren(nextArticle);
+          setupArticleToolbar(nextArticle);
           moveCamera(articlePos.x, articlePos.y, targetPath, false);
           history.pushState({}, "", targetPath);
           document.title = parsed.title;

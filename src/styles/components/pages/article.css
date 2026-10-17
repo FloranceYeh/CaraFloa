@@ -22,15 +22,54 @@
   background: var(--secondary-background-color);
   width: 48px;
   border-radius: 64px;
-  padding: 8px 0;
+  padding: 6px 0;
   gap: 4px;
+  transition:
+    padding 220ms ease,
+    gap 220ms ease;
 }
 .article-wrapper .toolbar .upper-tools .toolbar-item {
   display: grid;
   place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
   width: 36px;
   height: 36px;
   color: var(--primary-text-color);
+  cursor: pointer;
+  border-radius: 50%;
+  overflow: hidden;
+  max-height: 36px;
+  opacity: 1;
+  transform: scaleY(1);
+  transition:
+    max-height 220ms ease,
+    opacity 160ms ease,
+    transform 220ms ease,
+    margin 220ms ease;
+  transform-origin: center;
+}
+.article-wrapper .toolbar .upper-tools.is-at-top .to-top,
+.article-wrapper .toolbar .upper-tools.is-at-bottom .to-bottom {
+  max-height: 0;
+  opacity: 0;
+  transform: scaleY(0);
+  margin-top: -2px;
+  margin-bottom: -2px;
+  pointer-events: none;
+}
+.article-wrapper .toolbar .upper-tools.is-at-top {
+  transform-origin: bottom;
+}
+.article-wrapper .toolbar .upper-tools.is-at-bottom {
+  transform-origin: top;
+}
+.article-wrapper .toolbar .toolbar-item:hover,
+.article-wrapper .toolbar .toolbar-item:focus-visible {
+  background: color-mix(in srgb, var(--primary-text-color) 12%, transparent);
+  outline: none;
 }
 .article-wrapper .toolbar .lower-tools {
   display: grid;
@@ -45,9 +84,15 @@
 .article-wrapper .toolbar .lower-tools .toolbar-item {
   display: grid;
   place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
   width: 36px;
   height: 36px;
   color: var(--primary-text-color);
+  cursor: pointer;
+  border-radius: 50%;
 }
 .articles {
   width: 100%;
@@ -56,10 +101,15 @@
   min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
+  display: flex;
+  justify-content: center;
+}
+.articles::-webkit-scrollbar {
+  display: none;
 }
 .article {
   box-sizing: border-box;
-  width: 100%;
+  width: 900px;
   min-height: 100%;
   height: auto;
   padding: clamp(2rem, 5vw, 4rem);
