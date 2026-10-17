@@ -2,6 +2,7 @@
   /* 尺寸系统 */
   --primary-size: 56px;
   --secondary-size: calc(var(--primary-size) * 0.75);
+  --tertiary-size: calc(var(--primary-size) * 0.5);
   --notch-size: 72px;
   --page-cell-edge-fade: 90px;
 
@@ -111,4 +112,23 @@ a {
     "blank-lb  footer  blank-rb";
   width: 100vw;
   height: 100vh;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  :root {
+    --page-cell-edge-fade: 32px;
+  }
+  .main-wrapper {
+    grid-template-columns: 32px 1fr 32px;
+    grid-template-rows: 88px 1fr 96px;
+    grid-template-areas:
+      "blank-lt  topbar  blank-rt"
+      "blank0l   page    blank-rc"
+      "blank-lb  sidebar  blank-rb";
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
 }

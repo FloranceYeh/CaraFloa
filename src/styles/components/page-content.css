@@ -214,3 +214,39 @@
     transition: none;
   }
 }
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .page-content {
+    border-radius: var(--radius-xl);
+  }
+
+  .page-cell {
+    padding: var(--space-xs);
+  }
+
+  .page-cell-content {
+    padding: var(--space-md);
+  }
+
+  .placeholder-card {
+    width: 90%;
+    min-height: 280px;
+    padding: var(--space-lg);
+    font-size: clamp(1.25rem, 5vw, 1.875rem);
+  }
+
+  .placeholder-card i {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+
+  .return-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .return-button-hitbox {
+    top: 32px;
+    left: 32px;
+  }
+}

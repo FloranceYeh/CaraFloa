@@ -142,31 +142,31 @@ const defaultIndex = latestHomeIndex >= 0 ? latestHomeIndex : 0;
       startTime: 0,
     };
 
-    track.addEventListener("mousedown", (event) => {
-      if ((event.target as HTMLElement).closest("a.home-card-body")) {
+    const handleDragStart = (clientX: number, target: EventTarget | null) => {
+      if ((target as HTMLElement).closest("a.home-card-body")) {
         return;
       }
 
       dragState = {
         isDragging: true,
-        startX: event.clientX,
+        startX: clientX,
         startTime: Date.now(),
       };
-    });
+    };
 
-    track.addEventListener("mousemove", (event) => {
+    const handleDragMove = (clientX: number, preventDefault: () => void) => {
       if (!dragState.isDragging) return;
 
-      const deltaX = event.clientX - dragState.startX;
+      const deltaX = clientX - dragState.startX;
       if (Math.abs(deltaX) > 10) {
-        event.preventDefault();
+        preventDefault();
       }
-    });
+    };
 
-    track.addEventListener("mouseup", (event) => {
+    const handleDragEnd = (clientX: number) => {
       if (!dragState.isDragging) return;
 
-      const deltaX = event.clientX - dragState.startX;
+      const deltaX = clientX - dragState.startX;
       const deltaTime = Date.now() - dragState.startTime;
 
       if (Math.abs(deltaX) > 80) {
@@ -174,9 +174,57 @@ const defaultIndex = latestHomeIndex >= 0 ? latestHomeIndex : 0;
       }
 
       dragState.isDragging = false;
+    };
+
+    // 鼠标事件
+    track.addEventListener("mousedown", (event) => {
+      handleDragStart(event.clientX, event.target);
+    });
+
+    track.addEventListener("mousemove", (event) => {
+      handleDragMove(event.clientX, () => event.preventDefault());
+    });
+
+    track.addEventListener("mouseup", (event) => {
+      handleDragEnd(event.clientX);
     });
 
     track.addEventListener("mouseleave", () => {
+      dragState.isDragging = false;
+    });
+
+    // 触摸事件
+    track.addEventListener(
+      "touchstart",
+      (event) => {
+        if (event.touches.length === 1) {
+          handleDragStart(event.touches[0].clientX, event.target);
+        }
+      },
+      { passive: true },
+    );
+
+    track.addEventListener(
+      "touchmove",
+      (event) => {
+        if (event.touches.length === 1) {
+          handleDragMove(event.touches[0].clientX, () => event.preventDefault());
+        }
+      },
+      { passive: false },
+    );
+
+    track.addEventListener(
+      "touchend",
+      (event) => {
+        if (event.changedTouches.length === 1) {
+          handleDragEnd(event.changedTouches[0].clientX);
+        }
+      },
+      { passive: true },
+    );
+
+    track.addEventListener("touchcancel", () => {
       dragState.isDragging = false;
     });
 

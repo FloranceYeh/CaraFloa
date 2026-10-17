@@ -42,9 +42,9 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
         <i class="fa-solid fa-sun"></i>
       </button>
     </div>
-    <!-- <div class="settings">
+    <div class="settings">
       <i class="fa-solid fa-gear"></i>
-    </div> -->
+    </div>
   </div>
 </div>
 
@@ -59,7 +59,14 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
     }
     const containerRect = container.getBoundingClientRect();
     const targetRect = target.getBoundingClientRect();
-    indicator.style.setProperty("--indicator-y", `${targetRect.top - containerRect.top}px`);
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      indicator.style.setProperty("--indicator-x", `${targetRect.left - containerRect.left}px`);
+      indicator.style.removeProperty("--indicator-y");
+    } else {
+      indicator.style.setProperty("--indicator-y", `${targetRect.top - containerRect.top}px`);
+      indicator.style.removeProperty("--indicator-x");
+    }
     if (indicator.classList.contains("is-visible")) {
       indicator.classList.add("has-active-target");
     }

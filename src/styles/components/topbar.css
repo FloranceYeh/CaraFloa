@@ -173,3 +173,49 @@
   box-shadow: var(--shadow-md);
   transform: translateY(-1px) scale(1.05);
 }
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .topbar-wrapper {
+    margin-top: var(--space-sm);
+    padding: 0 var(--space-md);
+    gap: var(--space-xs);
+  }
+
+  .brand {
+    padding: 0 var(--space-md);
+  }
+
+  .brand .brand-name {
+    font-size: 1.125rem;
+  }
+
+  .island {
+    height: var(--secondary-size);
+    padding: 0 8px;
+  }
+
+  .island-container {
+    padding: 0 var(--space-md);
+    gap: var(--space-sm);
+    height: var(--tertiary-size);
+  }
+
+  .island .clock {
+    font-size: 1.125rem;
+  }
+
+  .island .period i {
+    font-size: 1rem;
+  }
+
+  .island .period-label {
+    font-size: 0.8125rem;
+    font-weight: normal;
+  }
+
+  .tools .rss {
+    width: var(--secondary-size);
+    height: var(--secondary-size);
+  }
+}

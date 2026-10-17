@@ -1,4 +1,6 @@
 .sidebar-wrapper {
+  position: relative;
+  z-index: 10;
   display: grid;
   grid-template-rows: 1fr 1fr;
   justify-items: center;
@@ -267,4 +269,81 @@
   color: var(--primary-text-color);
   box-shadow: var(--shadow-lg);
   transform: scale(1.05) rotate(90deg);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .sidebar-wrapper {
+    grid-template-rows: unset;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 var(--space-sm);
+    align-items: center;
+  }
+
+  .sidebar-wrapper .upper {
+    align-self: center;
+  }
+
+  .sidebar-wrapper .upper .menu {
+    flex-direction: row;
+    width: auto;
+    padding: 6px 12px;
+  }
+
+  .sidebar-wrapper .active-indicator {
+    top: 50%;
+    left: 0;
+    transform: translate(var(--indicator-x, 0), -50%);
+  }
+
+  .sidebar-wrapper .lower {
+    align-self: center;
+    flex-direction: row;
+    gap: var(--space-sm);
+  }
+
+  .sidebar-wrapper .theme-control {
+    width: auto;
+    height: var(--primary-size);
+    flex-direction: row-reverse;
+    padding: 0 8px;
+    overflow: visible;
+  }
+
+  .sidebar-wrapper .theme-control.is-open {
+    width: auto;
+    height: var(--primary-size);
+  }
+
+  .sidebar-wrapper .color-slider {
+    left: 50%;
+    top: auto;
+    bottom: calc(100% + 12px);
+    width: 180px;
+    height: var(--primary-size);
+    padding: 0 var(--space-md);
+    background: var(--primary-background-color);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    transform: translate(-50%, 10px);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 200ms ease,
+      transform 300ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .sidebar-wrapper .theme-control.is-open .color-slider {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .sidebar-wrapper .color-slider-input {
+    transform: translate(-50%, -50%) rotate(0deg);
+    width: 140px;
+  }
 }
