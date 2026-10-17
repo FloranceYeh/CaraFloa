@@ -1,7 +1,13 @@
 ---
 import "../../styles/components/pages/home.css";
 import { homeSections } from "../../config/home";
-import { getArticles, latestArticleForSection, sectionArticle } from "../../lib/articles";
+import {
+  articleSection,
+  getArticles,
+  latestArticleForSection,
+  latestPublishedArticle,
+  sectionArticle,
+} from "../../lib/articles";
 
 const now = new Date();
 const articles = await getArticles();
@@ -21,7 +27,15 @@ const cards = homeSections.map((section) => ({
     .filter((a) => a.data.publishedAt.getTime() > now.getTime())
     .sort((a, b) => a.data.publishedAt.getTime() - b.data.publishedAt.getTime())[0],
 }));
-const defaultIndex = Math.min(4, cards.length - 1);
+const latestHomeArticle = latestPublishedArticle(
+  articles.filter((article) =>
+    homeSections.some((section) => section.id === articleSection(article)),
+  ),
+  now,
+);
+const latestHomeSection = latestHomeArticle && articleSection(latestHomeArticle);
+const latestHomeIndex = cards.findIndex(({ section }) => section.id === latestHomeSection);
+const defaultIndex = latestHomeIndex >= 0 ? latestHomeIndex : Math.min(4, cards.length - 1);
 ---
 
 <div class="home-view">
@@ -37,7 +51,7 @@ const defaultIndex = Math.min(4, cards.length - 1);
         {article ? (
           <a class="home-card-body" href={`/${section.id}/${article.data.id}`}>
             <span class="home-card-index">{String(index + 1).padStart(2, "0")}</span>
-            <h2 class="home-section-title">{section.title}</h2>
+            <div class="home-section-title">{section.title}</div>
             <div class="home-card-content" data-state="published">
               <strong class="home-card-title">{article.data.title}</strong>
               <p>{article.data.summary || section.summary}</p>

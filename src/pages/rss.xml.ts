@@ -15,9 +15,7 @@ export const GET: APIRoute = async ({ site, url }) => {
   const now = Date.now();
   const sectionTitles = new Map(homeSections.map((section) => [section.id, section.title]));
   const articles = (await getArticles())
-    .filter(
-      (article) => article.id !== "about" && article.data.publishedAt.getTime() <= now,
-    )
+    .filter((article) => article.id !== "about" && article.data.publishedAt.getTime() <= now)
     .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 
   const items = articles

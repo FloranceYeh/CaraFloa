@@ -87,7 +87,8 @@
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   font-size: 0.9em;
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-family:
+    "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
   color: var(--primary-color-dark);
 }
 

@@ -34,7 +34,9 @@
   border-radius: var(--radius-full);
   font-size: 1.125rem;
   color: var(--secondary-text-color);
-  transition: color var(--transition-base), transform var(--transition-fast);
+  transition:
+    color var(--transition-base),
+    transform var(--transition-fast);
   cursor: pointer;
 }
 
@@ -98,7 +100,9 @@
   overflow: hidden;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border-color);
-  transition: height var(--transition-base), box-shadow var(--transition-base);
+  transition:
+    height var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .sidebar-wrapper .theme-control.is-open {

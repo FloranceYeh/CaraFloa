@@ -40,14 +40,13 @@
   padding: var(--space-sm);
   box-sizing: border-box;
   overflow: hidden;
-  mask-image:
-    linear-gradient(
-      to right,
-      transparent,
-      var(--primary-color) var(--page-cell-edge-fade),
-      var(--primary-color) calc(100% - var(--page-cell-edge-fade)),
-      transparent
-    );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    var(--primary-color) var(--page-cell-edge-fade),
+    var(--primary-color) calc(100% - var(--page-cell-edge-fade)),
+    transparent
+  );
   mask-composite: intersect;
 }
 
@@ -65,14 +64,13 @@
 .page-cell[data-grid-x="0"][data-grid-y="1"] {
   left: 0;
   top: 100%;
-  mask-image:
-    linear-gradient(
-      to bottom,
-      transparent,
-      var(--primary-color) var(--page-cell-edge-fade),
-      #000 calc(100% - var(--page-cell-edge-fade)),
-      transparent
-    );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    var(--primary-color) var(--page-cell-edge-fade),
+    #000 calc(100% - var(--page-cell-edge-fade)),
+    transparent
+  );
   mask-composite: intersect;
 }
 

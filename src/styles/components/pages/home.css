@@ -18,8 +18,8 @@
   box-sizing: border-box;
   transform: translateX(
     calc(
-      (50% - (var(--card-width) / 2) - var(--track-padding)) -
-        var(--active-column) * (var(--card-width) + var(--card-gap))
+      (50% - (var(--card-width) / 2) - var(--track-padding)) - var(--active-column) *
+        (var(--card-width) + var(--card-gap))
     )
   );
   transition: transform 600ms cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -79,7 +79,9 @@ a.home-card-body {
   text-decoration: none;
   color: inherit;
   cursor: pointer;
-  transition: transform var(--transition-base), background var(--transition-base);
+  transition:
+    transform var(--transition-base),
+    background var(--transition-base);
 }
 
 a.home-card-body:hover {
@@ -107,9 +109,9 @@ a.home-card-body:active {
   text-transform: uppercase;
 }
 
-.home-card h2 {
+.home-card .home-section-title {
   margin-top: var(--space-md);
-  font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+  font-size: 1.125rem;
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.02em;
@@ -140,7 +142,7 @@ a.home-card-body:active {
 
 .home-card-title {
   display: block;
-  font-size: 1.125rem;
+  font-size: clamp(1.75rem, 4.5vw, 2.75rem);
   font-weight: 600;
   margin-bottom: var(--space-sm);
   line-height: 1.4;
