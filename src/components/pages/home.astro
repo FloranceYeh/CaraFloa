@@ -140,17 +140,15 @@ const defaultIndex = latestHomeIndex >= 0 ? latestHomeIndex : 0;
       isDragging: false,
       startX: 0,
       startTime: 0,
+      didDrag: false,
     };
 
-    const handleDragStart = (clientX: number, target: EventTarget | null) => {
-      if ((target as HTMLElement).closest("a.home-card-body")) {
-        return;
-      }
-
+    const handleDragStart = (clientX: number) => {
       dragState = {
         isDragging: true,
         startX: clientX,
         startTime: Date.now(),
+        didDrag: false,
       };
     };
 
@@ -159,6 +157,7 @@ const defaultIndex = latestHomeIndex >= 0 ? latestHomeIndex : 0;
 
       const deltaX = clientX - dragState.startX;
       if (Math.abs(deltaX) > 10) {
+        dragState.didDrag = true;
         preventDefault();
       }
     };
@@ -178,7 +177,7 @@ const defaultIndex = latestHomeIndex >= 0 ? latestHomeIndex : 0;
 
     // 鼠标事件
     track.addEventListener("mousedown", (event) => {
-      handleDragStart(event.clientX, event.target);
+      handleDragStart(event.clientX);
     });
 
     track.addEventListener("mousemove", (event) => {
@@ -198,7 +197,7 @@ const defaultIndex = latestHomeIndex >= 0 ? latestHomeIndex : 0;
       "touchstart",
       (event) => {
         if (event.touches.length === 1) {
-          handleDragStart(event.touches[0].clientX, event.target);
+          handleDragStart(event.touches[0].clientX);
         }
       },
       { passive: true },
@@ -229,6 +228,17 @@ const defaultIndex = latestHomeIndex >= 0 ? latestHomeIndex : 0;
     track.addEventListener("touchcancel", () => {
       dragState.isDragging = false;
     });
+
+    track.addEventListener(
+      "click",
+      (event) => {
+        if (!dragState.didDrag) return;
+        event.preventDefault();
+        event.stopPropagation();
+        dragState.didDrag = false;
+      },
+      true,
+    );
 
     let wheelLocked = false;
     track.addEventListener(

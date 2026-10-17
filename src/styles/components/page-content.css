@@ -87,6 +87,14 @@
 .page-cell[data-grid-x="0"][data-grid-y="4"] {
   left: 0;
   top: 400%;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    var(--primary-color) var(--page-cell-edge-fade),
+    #000 calc(100% - var(--page-cell-edge-fade)),
+    transparent
+  );
+  mask-composite: intersect;
 }
 
 .return-button {

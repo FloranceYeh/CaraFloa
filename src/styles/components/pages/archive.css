@@ -288,3 +288,82 @@
   color: var(--secondary-text-color);
   font-size: 1.125rem;
 }
+
+@media (max-width: 768px) {
+  .archive-page {
+    padding: var(--space-xl) var(--space-md);
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .archive-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+  }
+
+  .archive-header h1 {
+    font-size: clamp(2rem, 10vw, 2.75rem);
+  }
+
+  .archive-tools {
+    align-items: stretch;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .archive-search,
+  .archive-select-label {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .archive-search {
+    padding: 0 var(--space-md);
+  }
+
+  .archive-search input {
+    min-width: 0;
+    padding: 0;
+  }
+
+  .archive-select-wrapper {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-sm);
+  }
+
+  .archive-select-label {
+    justify-content: space-between;
+  }
+
+  .archive-options {
+    right: 0;
+    left: 0;
+  }
+
+  .archive-item {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-md);
+  }
+
+  .archive-item-main {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .archive-item h2 {
+    overflow-wrap: anywhere;
+  }
+
+  .archive-item-meta {
+    width: 100%;
+    justify-content: space-between;
+    gap: var(--space-sm);
+  }
+}

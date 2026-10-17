@@ -299,7 +299,7 @@
   .sidebar-wrapper .lower {
     align-self: center;
     flex-direction: row;
-    gap: var(--space-sm);
+    gap: 4px;
   }
 
   .sidebar-wrapper .theme-control {
