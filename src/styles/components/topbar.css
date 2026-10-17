@@ -4,92 +4,156 @@
   align-items: center;
   grid-area: topbar;
 }
+
 .brand {
   justify-self: start;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: var(--space-md);
   height: var(--secondary-size);
-  background-color: var(--primary-background-color);
-  border-radius: 64px;
-  padding: 0 1rem;
+  background: var(--primary-background-color);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: var(--radius-full);
+  padding: 0 var(--space-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-base);
 }
+
+.brand:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
 .brand i {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
+  color: var(--primary-color);
+  transition: transform var(--transition-base);
 }
+
+.brand:hover i {
+  transform: rotate(-10deg) scale(1.05);
+}
+
 .brand .brand-name {
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  background: linear-gradient(135deg, var(--primary-text-color) 0%, var(--secondary-text-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
+
 .island {
   justify-self: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
   height: var(--primary-size);
-  background-color: var(--primary-background-color);
-  border-radius: 64px;
-  padding: 0 8px;
+  background: var(--primary-background-color);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: var(--radius-full);
+  padding: 0 10px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
 }
+
 .island-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: var(--space-lg);
   height: var(--secondary-size);
-  background-color: var(--secondary-background-color);
-  border-radius: 64px;
-  padding: 0 1rem;
+  background: var(--secondary-background-color);
+  border-radius: var(--radius-full);
+  padding: 0 var(--space-lg);
+  border: 1px solid var(--border-color);
 }
+
 .island .clock {
-  margin: auto;
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 1.375rem;
+  font-weight: 600;
   color: var(--primary-text-color);
-  display: grid;
-  place-items: center;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
 }
+
 .island .weather {
-  font-size: 1.3rem;
-  font-weight: bold;
-  color: var(--secondary-color);
-  margin: auto;
+  font-size: 1.25rem;
+  color: var(--primary-color);
   display: grid;
   place-items: center;
+  transition: transform var(--transition-base);
 }
+
+.island .weather:hover {
+  transform: scale(1.1);
+}
+
 .tools {
   justify-self: end;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: var(--space-md);
 }
+
 .tools .export {
   display: flex;
   align-items: center;
   justify-content: center;
   height: var(--secondary-size);
-  border-radius: 64px;
-  background-color: var(--primary-background-color);
-  padding: 0 1rem;
-  gap: 0.5rem;
+  border-radius: var(--radius-full);
+  background: var(--primary-background-color);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  padding: 0 var(--space-lg);
+  gap: var(--space-sm);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.tools .export:hover {
+  background: var(--secondary-background-color);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .tools .export i {
-  font-size: 1.2rem;
+  font-size: 1.125rem;
+  color: var(--primary-color);
 }
 
 .tools .export .hint {
-  font-weight: bold;
+  font-weight: 500;
+  font-size: 0.9375rem;
 }
+
 .tools .rss {
   display: grid;
   place-items: center;
   width: var(--secondary-size);
   height: var(--secondary-size);
-  border-radius: 64px;
-  background-color: var(--primary-background-color);
-  font-size: 1.2rem;
+  border-radius: var(--radius-full);
+  background: var(--primary-background-color);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  font-size: 1.125rem;
+  color: var(--primary-color);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.tools .rss:hover {
+  background: var(--secondary-background-color);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px) scale(1.05);
 }

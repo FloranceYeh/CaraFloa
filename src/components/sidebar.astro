@@ -31,7 +31,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
           type="range"
           min="0"
           max="360"
-          value="120"
+          value="210"
           aria-label="Adjust theme color"
         />
       </div>
@@ -112,13 +112,30 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
       }
     };
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
-    applyTheme(savedTheme ?? (systemTheme.matches ? "dark" : "light"));
+    const savedHue = localStorage.getItem("theme-hue");
+    if (savedHue) {
+      slider.value = savedHue;
+    }
+    applyTheme(savedTheme ?? (systemTheme.matches ? "light" : "dark"));
 
     const updateThemeColor = () => {
       const hue = Number(slider.value);
-      document.documentElement.style.setProperty("--primary-color", `hsl(${hue} 100% 33%)`);
-      document.documentElement.style.setProperty("--secondary-color", `hsl(${hue} 30% 65%)`);
+      document.documentElement.style.setProperty("--primary-color", `hsl(${hue} 100% 50%)`);
+      document.documentElement.style.setProperty("--primary-color-light", `hsl(${hue} 100% 95%)`);
+      document.documentElement.style.setProperty("--primary-color-dark", `hsl(${hue} 100% 20%)`);
+      document.documentElement.style.setProperty("--primary-color-rgb", `${hslToRgb(hue, 100, 50)}`);
+      document.documentElement.style.setProperty("--secondary-color", `hsl(${hue} 15% 65%)`);
       slider.style.setProperty("--slider-hue", String(hue));
+      localStorage.setItem("theme-hue", String(hue));
+    };
+
+    const hslToRgb = (h: number, s: number, l: number) => {
+      s /= 100;
+      l /= 100;
+      const k = (n: number) => (n + h / 30) % 12;
+      const a = s * Math.min(l, 1 - l);
+      const f = (n: number) => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+      return `${Math.round(255 * f(0))}, ${Math.round(255 * f(8))}, ${Math.round(255 * f(4))}`;
     };
     const setOpen = (open: boolean) => {
       control.classList.toggle("is-open", open);

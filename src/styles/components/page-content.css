@@ -27,7 +27,7 @@
   width: 100%;
   height: 100%;
   transform: translate(calc(var(--camera-x, 0) * -100%), calc(var(--camera-y, 0) * -100%));
-  transition: transform 700ms cubic-bezier(0.22, 0.75, 0.2, 1);
+  transition: transform 650ms cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: transform;
   z-index: 3;
 }
@@ -72,38 +72,50 @@
 
 .return-button {
   position: absolute;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background-color: var(--secondary-background-color);
+  background: var(--secondary-background-color);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   z-index: 1;
   display: grid;
   place-items: center;
   cursor: pointer;
   color: var(--primary-text-color);
-  border: none;
+  border: 1px solid var(--border-color);
   opacity: 0;
   pointer-events: none;
-  transform: translate(calc(100vw + 50%), -50%) scale(1);
+  transform: translate(calc(100vw + 50%), -50%) scale(0.8);
   transition:
-    opacity 1000ms ease 0ms,
-    transform 500ms cubic-bezier(0.22, 0.75, 0.2, 1) 0ms;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    opacity 800ms ease 0ms,
+    transform 450ms cubic-bezier(0.22, 0.61, 0.36, 1) 0ms;
+  box-shadow: var(--shadow-lg);
 }
 
 .return-button.visible {
   opacity: 1;
+  pointer-events: auto;
   transform: translate(-50%, -50%) scale(1);
   transition:
-    opacity 400ms ease 500ms,
-    transform 500ms cubic-bezier(0.22, 0.75, 0.2, 1) 200ms;
+    opacity 350ms ease 400ms,
+    transform 450ms cubic-bezier(0.22, 0.61, 0.36, 1) 150ms;
 }
 
 .return-button:hover {
-  transform: translate(-50%, -50%) scale(1.1);
+  background: var(--primary-color);
+  color: white;
+  transform: translate(-50%, -50%) scale(1.15);
+  box-shadow: var(--shadow-xl);
   transition:
-    opacity 400ms ease 500ms,
-    transform 200ms cubic-bezier(0.22, 0.75, 0.2, 1) 500ms;
+    opacity 350ms ease 400ms,
+    background var(--transition-base),
+    transform 250ms cubic-bezier(0.22, 0.61, 0.36, 1) 400ms,
+    box-shadow var(--transition-base);
+}
+
+.return-button:active {
+  transform: translate(-50%, -50%) scale(1.05);
 }
 
 .return-button-hitbox {
@@ -124,7 +136,7 @@
 }
 
 .return-button i {
-  font-size: 1.2rem;
+  font-size: 1.125rem;
 }
 
 .page-cell-content {
@@ -132,24 +144,38 @@
   height: 100%;
   display: grid;
   place-items: center;
+  padding: var(--space-xl);
 }
 
 .placeholder-card {
-  width: min(80%, 720px);
-  min-height: 320px;
-  border-radius: 28px;
+  width: min(85%, 720px);
+  min-height: 360px;
+  border-radius: var(--radius-2xl);
   display: grid;
   place-items: center;
   align-content: center;
-  gap: 1rem;
+  gap: var(--space-lg);
   background: var(--secondary-background-color);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   color: var(--primary-text-color);
-  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 500;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-color);
+  padding: var(--space-2xl);
+  transition: all var(--transition-base);
+}
+
+.placeholder-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 25px 35px -8px rgba(0, 0, 0, 0.15), 0 15px 15px -8px rgba(0, 0, 0, 0.08);
 }
 
 .placeholder-card i {
   color: var(--primary-color);
-  font-size: 3rem;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  filter: drop-shadow(0 4px 8px rgba(var(--primary-color-rgb), 0.3));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -158,6 +184,10 @@
   }
 
   .return-button {
+    transition: opacity 200ms ease, background var(--transition-base);
+  }
+
+  .placeholder-card {
     transition: none;
   }
 }

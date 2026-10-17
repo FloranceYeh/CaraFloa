@@ -3,55 +3,90 @@
   width: 100%;
   height: 100%;
   overflow: auto;
-  padding: clamp(1.5rem, 5vw, 4rem);
+  padding: clamp(2rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem);
 }
+
 .archive-content {
   width: min(980px, 100%);
   margin: 0 auto;
   color: var(--primary-text-color);
 }
+
 .archive-header {
   display: flex;
   align-items: end;
   justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-2xl);
 }
+
 .archive-label {
-  color: var(--primary-color);
-  font-size: 0.9rem;
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  background: var(--primary-color-dark);
+  color: white;
+  font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: 0.1em;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
 }
+
 .archive-header h1 {
-  margin-top: 0.5rem;
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  margin-top: var(--space-md);
+  font-size: clamp(2.25rem, 6vw, 3.75rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
+
 .archive-count {
-  opacity: 0.65;
+  color: var(--secondary-text-color);
+  font-size: 0.9375rem;
+  font-weight: 500;
 }
+
 .archive-tools {
   display: flex;
   flex-wrap: wrap;
   align-items: end;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
 }
+
 .archive-search,
 .archive-select-label {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  min-height: 42px;
-  padding: 0 0.9rem;
-  border-radius: 12px;
+  gap: var(--space-sm);
+  min-height: 46px;
+  padding: 0 var(--space-lg);
+  border-radius: var(--radius-md);
   color: var(--primary-text-color);
-  background-color: var(--secondary-background-color);
+  background: var(--secondary-background-color);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-base);
 }
+
+.archive-search:focus-within,
+.archive-select-label:focus-within {
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-color);
+}
+
 .archive-search {
-  flex: 1 1 260px;
+  flex: 1 1 280px;
 }
+
+.archive-search i {
+  color: var(--secondary-text-color);
+  font-size: 0.9375rem;
+}
+
 .archive-search input,
 .archive-select-button {
   border: 0;
@@ -60,118 +95,202 @@
   background: transparent;
   font: inherit;
 }
+
 .archive-search input {
   width: 100%;
+  font-size: 0.9375rem;
 }
+
 .archive-search input::placeholder {
-  color: currentColor;
-  opacity: 0.55;
+  color: var(--secondary-text-color);
 }
+
 .archive-select-label span {
-  opacity: 0.6;
-  font-size: 0.85rem;
+  color: var(--secondary-text-color);
+  font-size: 0.875rem;
+  font-weight: 500;
 }
+
 .archive-select-button {
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--space-sm);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  padding: 0.25rem 0;
 }
+
+.archive-select-button i {
+  font-size: 0.75rem;
+  color: var(--secondary-text-color);
+  transition: transform var(--transition-base);
+}
+
+.archive-select-label:focus-within .archive-select-button i {
+  transform: rotate(180deg);
+}
+
 .archive-options {
   position: absolute;
   z-index: 10;
-  top: calc(100% + 0.5rem);
+  top: calc(100% + var(--space-sm));
   right: 0;
   min-width: 100%;
-  padding: 0.35rem;
-  border-radius: 12px;
+  padding: var(--space-xs);
+  border-radius: var(--radius-md);
   background: var(--secondary-background-color);
-  box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-color);
+  animation: slideDown 200ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .archive-options[hidden] {
   display: none;
 }
+
 .archive-options button {
   display: block;
   width: 100%;
-  padding: 0.55rem 0.75rem;
+  padding: var(--space-sm) var(--space-md);
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   color: var(--primary-text-color);
   background: transparent;
   text-align: left;
   font: inherit;
+  font-size: 0.9375rem;
   cursor: pointer;
+  transition: all var(--transition-fast);
 }
+
 .archive-options button:hover,
 .archive-options button:focus-visible {
-  background: color-mix(in srgb, var(--primary-color) 22%, transparent);
+  background: var(--primary-color);
+  color: white;
   outline: 0;
+  transform: translateX(4px);
 }
+
 .archive-list {
   display: grid;
-  gap: 0.75rem;
+  gap: var(--space-md);
 }
+
 .archive-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
-  padding: 1.25rem 1.5rem;
-  border-radius: 18px;
+  gap: var(--space-xl);
+  padding: var(--space-lg) var(--space-xl);
+  border-radius: var(--radius-lg);
   color: var(--primary-text-color);
   background: var(--secondary-background-color);
-  transition:
-    transform 180ms ease,
-    background 180ms ease;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-base);
 }
 
 .archive-item[hidden] {
   display: none;
 }
+
 .archive-item:hover,
 .archive-item:focus-visible {
-  background: color-mix(in srgb, var(--primary-color) 20%, var(--secondary-background-color));
+  background: linear-gradient(
+    135deg,
+    var(--secondary-background-color) 0%,
+    rgba(var(--primary-color-rgb), 0.08) 100%
+  );
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
+
 .archive-item-section {
-  color: var(--primary-color);
-  font-size: 0.8rem;
+  display: inline-block;
+  padding: 0.3rem 0.65rem;
+  background: var(--primary-color-dark);
+  color: white;
+  font-size: 0.75rem;
   font-weight: 600;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
+
 .archive-item h2 {
-  margin: 0.35rem 0;
-  font-size: 1.1rem;
+  margin: var(--space-sm) 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
 }
+
 .archive-item p {
-  opacity: 0.7;
+  color: var(--secondary-text-color);
+  font-size: 0.9375rem;
+  line-height: 1.6;
 }
+
 .archive-item-meta {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--space-md);
   flex-shrink: 0;
-  opacity: 0.65;
-  font-size: 0.85rem;
+  color: var(--secondary-text-color);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
 }
+
 .archive-item-meta i {
   color: var(--primary-color);
+  font-size: 0.8125rem;
 }
+
 .archive-empty {
-  padding: 3rem 0;
+  padding: var(--space-2xl) 0;
   text-align: center;
-  opacity: 0.65;
+  color: var(--secondary-text-color);
+  font-size: 1.125rem;
 }
+
 @media (max-width: 640px) {
   .archive-header {
     align-items: start;
     flex-direction: column;
   }
+
+  .archive-tools {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .archive-search,
+  .archive-select-label {
+    width: 100%;
+  }
+
   .archive-item {
     align-items: start;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--space-md);
   }
+
   .archive-item-meta {
     width: 100%;
     justify-content: space-between;
