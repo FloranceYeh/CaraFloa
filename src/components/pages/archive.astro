@@ -1,0 +1,173 @@
+---
+import "../../styles/components/pages/archive.css";
+import { articleSection, getArticles, homeSections } from "../../lib/articles";
+
+const now = new Date();
+const articles = (await getArticles())
+  .filter(
+    (article) => article.id !== "about" && article.data.publishedAt.getTime() <= now.getTime(),
+  )
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+const sectionTitle = new Map(homeSections.map((section) => [section.id, section.title]));
+const periods = [
+  ...new Set(articles.map((article) => article.data.period).filter(Boolean)),
+] as string[];
+---
+
+<main class="archive-page" aria-label="归档">
+  <div class="archive-content">
+    <header class="archive-header">
+      <div>
+        <span class="archive-label">ARCHIVE</span>
+        <h1>文章归档</h1>
+      </div>
+      <span class="archive-count" data-result-count>
+        {articles.length} 篇文章
+      </span>
+    </header>
+
+    <div class="archive-tools">
+      <label class="archive-search">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input
+          type="search"
+          placeholder="搜索文章标题或摘要"
+          aria-label="搜索文章"
+          data-archive-search
+        />
+      </label>
+      <div class="archive-select-label" data-archive-filter="section" data-value="all">
+        <span>板块</span>
+        <button type="button" class="archive-select-button" aria-expanded="false">
+          <span data-archive-value>全部板块</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="archive-options" hidden>
+          <button type="button" data-value="all">
+            全部板块
+          </button>
+          {homeSections.map((section) => (
+            <button type="button" data-value={section.id}>
+              {section.title}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div class="archive-select-label" data-archive-filter="period" data-value="all">
+        <span>周期</span>
+        <button type="button" class="archive-select-button" aria-expanded="false">
+          <span data-archive-value>全部周期</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="archive-options" hidden>
+          <button type="button" data-value="all">
+            全部周期
+          </button>
+          {periods.map((period) => (
+            <button type="button" data-value={period}>
+              {period}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="archive-list" data-archive-list>
+      {articles.map((article) => (
+        <a
+          class="archive-item"
+          href={`/${articleSection(article)}/${article.data.id}`}
+          data-section={articleSection(article)}
+          data-period={article.data.period ?? ""}
+          data-search={`${article.data.title} ${article.data.summary}`.toLowerCase()}
+        >
+          <div class="archive-item-main">
+            <span class="archive-item-section">
+              {sectionTitle.get(articleSection(article)) ?? articleSection(article)}
+            </span>
+            <h2>{article.data.title}</h2>
+            <p>{article.data.summary}</p>
+          </div>
+          <div class="archive-item-meta">
+            {article.data.period && <span>{article.data.period}</span>}
+            <time datetime={article.data.publishedAt.toISOString()}>
+              {article.data.publishedAt.toLocaleDateString("zh-CN")}
+            </time>
+            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          </div>
+        </a>
+      ))}
+      <p class="archive-empty" data-archive-empty hidden>
+        没有找到匹配的文章。
+      </p>
+    </div>
+  </div>
+</main>
+
+<script>
+  const setupArchive = () => {
+    const list = document.querySelector<HTMLElement>("[data-archive-list]");
+    const search = document.querySelector<HTMLInputElement>("[data-archive-search]");
+    const filters = [...document.querySelectorAll<HTMLElement>("[data-archive-filter]")];
+    const count = document.querySelector<HTMLElement>("[data-result-count]");
+    const empty = document.querySelector<HTMLElement>("[data-archive-empty]");
+    if (!list || !search || filters.length !== 2 || !count || !empty) return;
+
+    const items = [...list.querySelectorAll<HTMLElement>(".archive-item")];
+    const update = () => {
+      const keyword = search.value.trim().toLocaleLowerCase();
+      const visible = items.filter((item) => {
+        const searchableText = item.dataset.search?.toLocaleLowerCase() ?? "";
+        const matchesKeyword = !keyword || searchableText.includes(keyword);
+        const section = filters.find((filter) => filter.dataset.archiveFilter === "section")
+          ?.dataset.value;
+        const period = filters.find((filter) => filter.dataset.archiveFilter === "period")?.dataset
+          .value;
+        const matchesSection = section === "all" || item.dataset.section === section;
+        const matchesPeriod = period === "all" || item.dataset.period === period;
+        item.hidden = !(matchesKeyword && matchesSection && matchesPeriod);
+        return !item.hidden;
+      });
+      count.textContent = `${visible.length} 篇文章`;
+      empty.hidden = visible.length > 0;
+    };
+
+    filters.forEach((filter) => {
+      const button = filter.querySelector<HTMLButtonElement>(".archive-select-button");
+      const options = filter.querySelector<HTMLElement>(".archive-options");
+      const value = filter.querySelector<HTMLElement>("[data-archive-value]");
+      if (!button || !options || !value) return;
+      button.addEventListener("click", () => {
+        const open = !options.hidden;
+        filters.forEach((other) => {
+          other.querySelector<HTMLElement>(".archive-options")?.setAttribute("hidden", "");
+          other
+            .querySelector<HTMLButtonElement>(".archive-select-button")
+            ?.setAttribute("aria-expanded", "false");
+        });
+        options.hidden = open;
+        button.setAttribute("aria-expanded", String(!open));
+      });
+      options.querySelectorAll<HTMLButtonElement>("[data-value]").forEach((option) => {
+        option.addEventListener("click", () => {
+          filter.dataset.value = option.dataset.value ?? "all";
+          value.textContent = option.textContent;
+          options.hidden = true;
+          button.setAttribute("aria-expanded", "false");
+          update();
+        });
+      });
+    });
+    document.addEventListener("click", (event) => {
+      if (!(event.target as HTMLElement).closest("[data-archive-filter]")) {
+        filters.forEach((filter) =>
+          filter.querySelector<HTMLElement>(".archive-options")?.setAttribute("hidden", ""),
+        );
+      }
+    });
+    search.addEventListener("input", update);
+    search.addEventListener("search", update);
+    update();
+  };
+  setupArchive();
+</script>

@@ -7,6 +7,7 @@ import Home from "./pages/home.astro";
 import Article from "./pages/article.astro";
 import About from "./pages/about.astro";
 import Links from "./pages/links.astro";
+import Archive from "./pages/archive.astro";
 
 interface Props {
   item?: MenuItem;
@@ -55,6 +56,8 @@ const mainPages = getMainPages();
         >
           {page.path === "/" ? (
             <Home />
+          ) : page.path === "/archive" ? (
+            <Archive />
           ) : page.path === "/about" ? (
             <About />
           ) : page.path === "/link" ? (
