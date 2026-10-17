@@ -1,19 +1,19 @@
 ---
 import "../styles/components/topbar.css";
 import { getArticles, latestPublishedPeriod } from "../lib/articles";
+import SiteLogoMark from "./site-logo.astro";
 
 const articles = await getArticles();
 const currentPeriod = latestPublishedPeriod(articles);
 const brandSplitIndex = Math.ceil(SiteTitle.length / 2);
 
 import { SiteTitle } from "../config/site";
-import { SiteLogo } from "../config/site";
 ---
 
 <div class="topbar-wrapper">
   <div class="brand">
     <div class="brand-logo">
-      <img src={SiteLogo} alt={SiteTitle} />
+      <SiteLogoMark />
     </div>
     <div class="brand-name" aria-label={SiteTitle}>
       <span class="brand-name-first">{SiteTitle.slice(0, brandSplitIndex)}</span>

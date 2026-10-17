@@ -1,0 +1,24 @@
+---
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import Topbar from "../components/topbar.astro";
+import Sidebar from "../components/sidebar.astro";
+import PageContent from "../components/page-content.astro";
+import { SiteLogo, SiteTitle } from "../config/site";
+import "../styles/global.css";
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href={SiteLogo} />
+    <title>404 · {SiteTitle}</title>
+  </head>
+  <body>
+    <div class="main-wrapper">
+      <Topbar />
+      <Sidebar />
+      <PageContent notFound />
+    </div>
+  </body>
+</html>

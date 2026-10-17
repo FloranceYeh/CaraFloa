@@ -29,14 +29,20 @@
 }
 
 .brand .brand-logo {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   color: var(--primary-color);
   transition: transform var(--transition-base);
 }
 
+.brand .brand-logo .site-logo {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .brand:hover .brand-logo {
-  transform: rotate(-10deg) scale(1.05);
+  transform: rotate(-20deg) scale(1.05);
 }
 
 .brand .brand-name {

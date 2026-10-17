@@ -38,8 +38,8 @@
   --primary-color: hsl(110, 70%, 50%);
   --primary-color-light: hsl(110, 70%, 96%);
   --primary-color-dark: hsl(130, 70%, 42%);
-  --primary-color-rgb: 0, 122, 255;
-  --secondary-color: hsl(210, 15%, 65%);
+  --primary-color-rgb: 89, 217, 38;
+  --secondary-color: hsl(110, 15%, 65%);
 
   /* 阴影系统 */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);

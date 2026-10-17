@@ -1,18 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="200 150 400 400">
   <defs>
     <linearGradient id="mintGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#78ff73"/>
-      <stop offset="45%" stop-color="#2dd486"/>
-      <stop offset="100%" stop-color="#0f764b"/>
+      <stop offset="0%" stop-color="hsl(110, 70%, 75%)"/>
+      <stop offset="45%" stop-color="hsl(110, 70%, 50%)"/>
+      <stop offset="100%" stop-color="hsl(110, 70%, 25%)"/>
     </linearGradient>
     <linearGradient id="irisGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#f83838"/>
-      <stop offset="50%" stop-color="#dc81f8"/>
-      <stop offset="100%" stop-color="#fc84dc"/>
+      <stop offset="0%" stop-color="hsl(330, 70%, 25%)"/>
+      <stop offset="50%" stop-color="hsl(330, 70%, 50%)"/>
+      <stop offset="100%" stop-color="hsl(330, 70%, 75%)"/>
     </linearGradient>
-    <filter id="shadowUnder" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000000" flood-opacity="0.6"/>
-    </filter>
   </defs>
 
   <g transform="translate(400 350)" filter="url(#shadowUnder)">

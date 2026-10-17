@@ -8,18 +8,26 @@ import Article from "./pages/article.astro";
 import About from "./pages/about.astro";
 import Links from "./pages/links.astro";
 import Archive from "./pages/archive.astro";
+import NotFound from "./pages/not-found.astro";
 
 interface Props {
   item?: MenuItem;
   section?: string;
   articleId?: string;
+  notFound?: boolean;
 }
-const { item = menu[0], section, articleId } = Astro.props;
+const { item = menu[0], section, articleId, notFound = false } = Astro.props;
 const isArticleView = !!(section && articleId);
+const notFoundPage = getPageConfig("/404");
 
 let cameraX = 0,
   cameraY = 0;
-if (isArticleView) {
+if (notFound) {
+  if (notFoundPage) {
+    cameraX = notFoundPage.gridX;
+    cameraY = notFoundPage.gridY;
+  }
+} else if (isArticleView) {
   const articlePage = getPageConfig("article");
   if (articlePage) {
     cameraX = articlePage.gridX;
@@ -77,6 +85,17 @@ const mainPages = getMainPages();
     <div class="page-cell" data-grid-x="1" data-grid-y="0" data-page-path="article">
       {isArticleView && <Article section={section} articleId={articleId} />}
     </div>
+
+    {notFoundPage && (
+      <div
+        class="page-cell"
+        data-grid-x={notFoundPage.gridX}
+        data-grid-y={notFoundPage.gridY}
+        data-page-path={notFoundPage.path}
+      >
+        {notFound && <NotFound />}
+      </div>
+    )}
   </div>
 </main>
 

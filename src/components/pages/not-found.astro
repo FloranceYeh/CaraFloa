@@ -1,0 +1,72 @@
+---
+import SiteLogoMark from "../site-logo.astro";
+---
+
+<div class="not-found-content" aria-labelledby="not-found-title">
+  <div class="not-found-logo">
+    <SiteLogoMark />
+  </div>
+  <div class="not-found-message">
+    <h1 id="not-found-title">404</h1>
+    <p>页面不存在</p>
+  </div>
+</div>
+
+<style>
+  .not-found-content {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    position: relative;
+  }
+
+  .not-found-logo {
+    position: relative;
+    width: clamp(160px, 28vw, 320px);
+    top: -3rem;
+    aspect-ratio: 1;
+    transform-origin: 51% 51%;
+    transform-box: fill-box;
+    backface-visibility: hidden;
+    will-change: transform;
+    animation: not-found-logo-spin 32s linear infinite;
+  }
+
+  .not-found-logo .site-logo {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .not-found-message {
+    position: absolute;
+    bottom: clamp(12%, 10vw, 20%);
+    display: grid;
+    gap: var(--space-xs);
+    color: var(--secondary-text-color);
+    text-align: center;
+  }
+
+  h1 {
+    color: var(--primary-text-color);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  @keyframes not-found-logo-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .not-found-logo {
+      animation: none;
+    }
+  }
+</style>

@@ -62,6 +62,11 @@
   padding-left: 0;
 }
 
+.page-cell[data-grid-x="4"][data-grid-y="4"] {
+  left: 400%;
+  top: 400%;
+}
+
 .page-cell[data-grid-x="0"][data-grid-y="1"] {
   left: 0;
   top: 100%;
