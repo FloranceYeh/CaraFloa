@@ -1,0 +1,11 @@
+---
+import "../../styles/components/pages/about.css";
+import { getEntry, render } from "astro:content";
+
+const about = await getEntry("articles", "about");
+const Content = about ? (await render(about)).Content : undefined;
+---
+
+<main class="about-page" aria-label="关于">
+  <article class="about-card">{Content ? <Content /> : <p>暂无关于内容。</p>}</article>
+</main>

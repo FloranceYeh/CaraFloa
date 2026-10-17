@@ -1,0 +1,53 @@
+---
+import "../../styles/components/pages/links.css";
+import { links } from "../../config/link";
+---
+
+<main class="links-page" aria-label="友链">
+  <section class="links-card">
+    <header class="links-header">
+      <span class="links-label">LINKS</span>
+      <h1>友链</h1>
+    </header>
+    {Object.keys(links).length > 0 ? (
+      <div class="links-content">
+        {Object.entries(links).map(([category, items]) => (
+          <section class="link-category">
+            <h2 class="link-category-title">
+              <i class="fa-solid fa-link" aria-hidden="true"></i>
+              {category}
+            </h2>
+            <div class="link-navigation">
+              {Object.entries(items).map(([key, item]) => (
+                <a
+                  class="link-item"
+                  href={item.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  data-key={key}
+                >
+                  <div class="link-item-header">
+                    <img
+                      src={item.ava}
+                      alt={item.name}
+                      loading="lazy"
+                      onerror="this.onerror=null;this.src='/images/avatar.svg'"
+                    />
+                  </div>
+                  <div class="link-item-body">
+                    <h3 class="link-item-title">{item.name}</h3>
+                    <p class="link-item-description" title={item.des}>
+                      {item.des}
+                    </p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+    ) : (
+      <p class="links-empty">暂无友链。</p>
+    )}
+  </section>
+</main>

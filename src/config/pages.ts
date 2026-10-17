@@ -9,7 +9,7 @@ export const pageGrid: PageConfig[] = [
   { path: "/", gridX: 0, gridY: 0, name: "Home" },
   { path: "/archive", gridX: 0, gridY: 1, name: "Archive" },
   { path: "/list", gridX: 0, gridY: 2, name: "List" },
-  { path: "/profile", gridX: 0, gridY: 3, name: "Profile" },
+  { path: "/about", gridX: 0, gridY: 3, name: "About" },
   { path: "/link", gridX: 0, gridY: 4, name: "Link" },
 
   { path: "article", gridX: 1, gridY: 0, name: "Article" },

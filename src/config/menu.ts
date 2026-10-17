@@ -7,7 +7,7 @@ export interface MenuItem {
 export const menu: MenuItem[] = [
   { name: "Home", path: "/", icon: "fa-solid fa-house" },
   { name: "Archive", path: "/archive", icon: "fa-solid fa-box-archive" },
-  { name: "Profile", path: "/profile", icon: "fa-solid fa-circle-user" },
+  { name: "About", path: "/about", icon: "fa-solid fa-circle-user" },
   { name: "Link", path: "/link", icon: "fa-solid fa-link" },
 ];
 

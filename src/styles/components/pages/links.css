@@ -1,0 +1,89 @@
+.links-header {
+  margin-bottom: 2rem;
+}
+
+.links-label {
+  color: var(--primary-color);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.links-header h1 {
+  margin-top: 0.5rem;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+}
+
+.link-category + .link-category {
+  margin-top: 2.5rem;
+}
+
+.link-category-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.link-category-title i {
+  color: var(--primary-color);
+}
+
+.link-navigation {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 1rem;
+}
+
+.link-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 0;
+  padding: 1rem;
+  border-radius: 16px;
+  color: var(--primary-text-color);
+  background: color-mix(in srgb, var(--primary-text-color) 8%, transparent);
+  transition:
+    transform 180ms ease,
+    background 180ms ease;
+}
+
+.link-item-header {
+  flex: 0 0 52px;
+  width: 52px;
+  height: 52px;
+}
+
+.link-item-header img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.link-item-body {
+  min-width: 0;
+}
+.link-item-title {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+}
+.link-item-description {
+  overflow: hidden;
+  margin: 0;
+  opacity: 0.7;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.link-item:hover,
+.link-item:focus-visible {
+  background: color-mix(in srgb, var(--primary-color) 22%, transparent);
+  transform: translateY(-2px);
+}
+
+.links-empty {
+  opacity: 0.7;
+}
