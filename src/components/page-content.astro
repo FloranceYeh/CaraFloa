@@ -267,13 +267,18 @@ const mainPages = getMainPages();
 
         const updateToolbar = () => {
           const maxScrollTop = Math.max(0, articles.scrollHeight - articles.clientHeight);
+          const hasOverflow = maxScrollTop > 1;
           const atTop = articles.scrollTop <= 1;
           const atBottom = articles.scrollTop >= maxScrollTop - 1;
+          upperTools.classList.toggle("is-not-scrollable", !hasOverflow);
           upperTools.classList.toggle("is-at-top", atTop);
           upperTools.classList.toggle("is-at-bottom", atBottom);
         };
 
         articles.addEventListener("scroll", updateToolbar, { passive: true });
+        new ResizeObserver(updateToolbar).observe(articles);
+        if (articles.firstElementChild)
+          new ResizeObserver(updateToolbar).observe(articles.firstElementChild);
         updateToolbar();
       });
     };
@@ -340,7 +345,9 @@ const mainPages = getMainPages();
         return;
       }
 
-      const link = target.closest<HTMLAnchorElement>("a.home-card-body[href]");
+      const link = target.closest<HTMLAnchorElement>(
+        "a.home-card-body[href], a.archive-item[href]",
+      );
       if (link) {
         event.preventDefault();
         const articlePos = pageGridMap.get("article");
@@ -348,6 +355,7 @@ const mainPages = getMainPages();
 
         const targetUrl = link.href;
         const targetPath = new URL(targetUrl).pathname;
+        const returnPath = link.matches("a.archive-item") ? "/archive" : "/";
         const articleCell = document.querySelector<HTMLElement>(
           '.page-cell[data-page-path="article"]',
         );
@@ -362,6 +370,7 @@ const mainPages = getMainPages();
 
           articleCell.replaceChildren(nextArticle);
           setupArticleToolbar(nextArticle);
+          content.dataset.returnPath = returnPath;
           moveCamera(articlePos.x, articlePos.y, targetPath, false);
           history.pushState({}, "", targetPath);
           document.title = parsed.title;
@@ -373,9 +382,10 @@ const mainPages = getMainPages();
 
     const hitbox = document.querySelector<HTMLElement>(".return-button-hitbox");
     hitbox?.addEventListener("click", () => {
-      const homePos = pageGridMap.get("/");
-      if (homePos) {
-        moveCamera(homePos.x, homePos.y, "/", true);
+      const returnPath = content.dataset.returnPath || "/";
+      const returnPos = pageGridMap.get(returnPath);
+      if (returnPos) {
+        moveCamera(returnPos.x, returnPos.y, returnPath, true);
       }
     });
 

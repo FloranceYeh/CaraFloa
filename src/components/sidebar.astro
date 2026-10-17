@@ -120,9 +120,9 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 
     const updateThemeColor = () => {
       const hue = Number(slider.value);
-      document.documentElement.style.setProperty("--primary-color", `hsl(${hue} 100% 50%)`);
-      document.documentElement.style.setProperty("--primary-color-light", `hsl(${hue} 100% 95%)`);
-      document.documentElement.style.setProperty("--primary-color-dark", `hsl(${hue} 100% 20%)`);
+      document.documentElement.style.setProperty("--primary-color", `hsl(${hue} 70% 50%)`);
+      document.documentElement.style.setProperty("--primary-color-light", `hsl(${hue} 70% 95%)`);
+      document.documentElement.style.setProperty("--primary-color-dark", `hsl(${hue} 70% 20%)`);
       document.documentElement.style.setProperty("--primary-color-rgb", `${hslToRgb(hue, 100, 50)}`);
       document.documentElement.style.setProperty("--secondary-color", `hsl(${hue} 15% 65%)`);
       slider.style.setProperty("--slider-hue", String(hue));

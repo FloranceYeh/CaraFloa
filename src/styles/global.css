@@ -96,7 +96,7 @@ a {
 .main-wrapper {
   display: grid;
   grid-template-columns: 96px 1fr 32px;
-  grid-template-rows: 96px 1fr 96px;
+  grid-template-rows: 96px 1fr 48px;
   grid-template-areas:
     "blank-lt  topbar  blank-rt"
     "sidebar   page    blank-rc"

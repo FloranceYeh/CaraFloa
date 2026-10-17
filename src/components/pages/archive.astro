@@ -37,38 +37,40 @@ const periods = [
           data-archive-search
         />
       </label>
-      <div class="archive-select-label" data-archive-filter="section" data-value="all">
-        <span>板块</span>
-        <button type="button" class="archive-select-button" aria-expanded="false">
-          <span data-archive-value>全部板块</span>
-          <i class="fa-solid fa-chevron-down"></i>
-        </button>
-        <div class="archive-options" hidden>
-          <button type="button" data-value="all">
-            全部板块
+      <div class="archive-select-wrapper">
+        <div class="archive-select-label" data-archive-filter="section" data-value="all">
+          <span class="hint">板块</span>
+          <button type="button" class="archive-select-button" aria-expanded="false">
+            <span data-archive-value>全部板块</span>
+            <i class="fa-solid fa-chevron-down"></i>
           </button>
-          {publishedSections.map((section) => (
-            <button type="button" data-value={section.id}>
-              {section.title}
+          <div class="archive-options" hidden>
+            <button type="button" data-value="all">
+              全部板块
             </button>
-          ))}
+            {publishedSections.map((section) => (
+              <button type="button" data-value={section.id}>
+                {section.title}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
-      <div class="archive-select-label" data-archive-filter="period" data-value="all">
-        <span>周期</span>
-        <button type="button" class="archive-select-button" aria-expanded="false">
-          <span data-archive-value>全部周期</span>
-          <i class="fa-solid fa-chevron-down"></i>
-        </button>
-        <div class="archive-options" hidden>
-          <button type="button" data-value="all">
-            全部周期
+        <div class="archive-select-label" data-archive-filter="period" data-value="all">
+          <span class="hint">周期</span>
+          <button type="button" class="archive-select-button" aria-expanded="false">
+            <span data-archive-value>全部周期</span>
+            <i class="fa-solid fa-chevron-down"></i>
           </button>
-          {periods.map((period) => (
-            <button type="button" data-value={period}>
-              {period}
+          <div class="archive-options" hidden>
+            <button type="button" data-value="all">
+              全部周期
             </button>
-          ))}
+            {periods.map((period) => (
+              <button type="button" data-value={period}>
+                {period}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>

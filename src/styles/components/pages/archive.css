@@ -47,15 +47,27 @@
 }
 
 .archive-tools {
+  width: 100%;
+  position: relative;
+  z-index: 20;
   display: flex;
   flex-wrap: wrap;
-  align-items: end;
+  justify-content: center;
+  align-items: center;
   gap: var(--space-md);
   margin-bottom: var(--space-xl);
 }
 
+.archive-select-wrapper {
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
 .archive-search,
 .archive-select-label {
+  flex-grow: 1;
   position: relative;
   display: flex;
   align-items: center;
@@ -79,7 +91,7 @@
 }
 
 .archive-search {
-  flex: 1 1 280px;
+  min-width: 0;
 }
 
 .archive-search i {
@@ -98,11 +110,17 @@
 
 .archive-search input {
   width: 100%;
+  padding: 0 auto var(--space-lg);
   font-size: 0.9375rem;
 }
 
 .archive-search input::placeholder {
   color: var(--secondary-text-color);
+}
+
+.archive-select-label .hint {
+  font-size: 0.8rem;
+  opacity: 0.7;
 }
 
 .archive-select-label span {
@@ -186,6 +204,8 @@
 }
 
 .archive-list {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: var(--space-md);
 }
@@ -267,32 +287,4 @@
   text-align: center;
   color: var(--secondary-text-color);
   font-size: 1.125rem;
-}
-
-@media (max-width: 640px) {
-  .archive-header {
-    align-items: start;
-    flex-direction: column;
-  }
-
-  .archive-tools {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .archive-search,
-  .archive-select-label {
-    width: 100%;
-  }
-
-  .archive-item {
-    align-items: start;
-    flex-direction: column;
-    gap: var(--space-md);
-  }
-
-  .archive-item-meta {
-    width: 100%;
-    justify-content: space-between;
-  }
 }

@@ -123,21 +123,16 @@
   transition: all var(--transition-base);
 }
 
+.sidebar-wrapper .theme-mode {
+  color: var(--secondary-text-color);
+}
+
 .sidebar-wrapper .theme-color:hover,
 .sidebar-wrapper .theme-mode:hover {
   background-color: var(--hover-overlay);
   transform: scale(1.1);
 }
 
-.sidebar-wrapper .theme-color.focus {
-  color: var(--primary-text-color);
-  background-color: var(--secondary-background-color);
-}
-
-.sidebar-wrapper .theme-mode.focus {
-  color: var(--primary-text-color);
-  background-color: var(--secondary-background-color);
-}
 .sidebar-wrapper .color-slider {
   position: absolute;
   top: 10px;
