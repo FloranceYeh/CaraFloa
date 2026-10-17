@@ -59,6 +59,7 @@
   left: 100%;
   top: 0;
   mask-image: none;
+  padding-left: 0;
 }
 
 .page-cell[data-grid-x="0"][data-grid-y="1"] {

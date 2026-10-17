@@ -171,10 +171,11 @@ const mainPages = getMainPages();
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
 
+      const rootStyles = getComputedStyle(document.documentElement);
       const R = 32;
-      const maxNotchW = 72;
-      const maxNotchH = 72;
-      const rf = 24;
+      const maxNotchW = Number.parseFloat(rootStyles.getPropertyValue("--notch-size")) || 72;
+      const maxNotchH = maxNotchW;
+      const rf = Number.parseFloat(rootStyles.getPropertyValue("--notch-radius")) || 24;
 
       const progress = easeInOutCubic(notchProgress);
       const notchW = maxNotchW * progress;
@@ -189,8 +190,9 @@ const mainPages = getMainPages();
       ctx.fill();
 
       if (returnBtn) {
-        returnBtn.style.left = `36px`;
-        returnBtn.style.top = `36px`;
+        const offset = matchMedia("(max-width: 768px)").matches ? 32 : 36;
+        returnBtn.style.left = `${offset}px`;
+        returnBtn.style.top = `${offset}px`;
       }
     };
 

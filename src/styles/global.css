@@ -4,6 +4,7 @@
   --secondary-size: calc(var(--primary-size) * 0.75);
   --tertiary-size: calc(var(--primary-size) * 0.5);
   --notch-size: 72px;
+  --notch-radius: 24px;
   --page-cell-edge-fade: 90px;
 
   /* 圆角系统 */
@@ -79,6 +80,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body,
@@ -118,6 +120,8 @@ a {
 @media (max-width: 768px) {
   :root {
     --page-cell-edge-fade: 32px;
+    --notch-size: 64px;
+    --notch-radius: 24px;
   }
   .main-wrapper {
     grid-template-columns: 1fr;
@@ -126,9 +130,5 @@ a {
       "topbar"
       "page"
       "sidebar";
-  }
-
-  * {
-    -webkit-tap-highlight-color: transparent;
   }
 }
