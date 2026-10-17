@@ -2,6 +2,7 @@
   /* 尺寸系统 */
   --primary-size: 56px;
   --secondary-size: calc(var(--primary-size) * 0.75);
+  --notch-size: 72px;
 
   /* 圆角系统 */
   --radius-sm: 8px;
@@ -9,6 +10,7 @@
   --radius-lg: 16px;
   --radius-xl: 20px;
   --radius-2xl: 28px;
+  --radius-3xl: 32px;
   --radius-full: 9999px;
 
   /* 间距系统 */

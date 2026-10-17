@@ -5,6 +5,7 @@
   position: relative;
   isolation: isolate;
   grid-area: page;
+  border-radius: var(--radius-3xl);
 }
 
 .page-background {
@@ -78,7 +79,7 @@
   background: var(--secondary-background-color);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  z-index: 1;
+  z-index: 5;
   display: grid;
   place-items: center;
   cursor: pointer;
@@ -169,7 +170,9 @@
 
 .placeholder-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 25px 35px -8px rgba(0, 0, 0, 0.15), 0 15px 15px -8px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 25px 35px -8px rgba(0, 0, 0, 0.15),
+    0 15px 15px -8px rgba(0, 0, 0, 0.08);
 }
 
 .placeholder-card i {
@@ -184,7 +187,9 @@
   }
 
   .return-button {
-    transition: opacity 200ms ease, background var(--transition-base);
+    transition:
+      opacity 200ms ease,
+      background var(--transition-base);
   }
 
   .placeholder-card {
