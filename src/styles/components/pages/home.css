@@ -31,7 +31,7 @@
 .home-card {
   position: relative;
   flex: 0 0 var(--card-width);
-  height: min(70vh, 440px);
+  height: max(60vh, 440px);
   border-radius: var(--radius-2xl);
   background: var(--secondary-background-color);
   backdrop-filter: blur(20px) saturate(180%);
