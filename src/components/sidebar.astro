@@ -38,7 +38,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
       <button class="theme-color" type="button" aria-expanded="false" aria-controls="theme-slider">
         <i class="fa-solid fa-palette"></i>
       </button>
-      <button class="theme-mode" type="button" aria-label="Theme settings">
+      <button class="theme-mode" type="button" aria-label="切换明暗模式" title="切换明暗模式">
         <i class="fa-solid fa-sun"></i>
       </button>
     </div>
@@ -102,6 +102,18 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
     const slider = control?.querySelector<HTMLInputElement>(".color-slider-input");
     if (!control || !button || !modeButton || !slider) return;
 
+    const modeIcon = modeButton.querySelector<HTMLElement>("i");
+    const systemTheme = matchMedia("(prefers-color-scheme: light)");
+    const applyTheme = (theme: "light" | "dark") => {
+      document.documentElement.dataset.theme = theme;
+      modeButton.setAttribute("aria-pressed", String(theme === "dark"));
+      if (modeIcon) {
+        modeIcon.className = theme === "light" ? "fa-solid fa-sun" : "fa-solid fa-moon";
+      }
+    };
+    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
+    applyTheme(savedTheme ?? (systemTheme.matches ? "dark" : "light"));
+
     const updateThemeColor = () => {
       const hue = Number(slider.value);
       document.documentElement.style.setProperty("--primary-color", `hsl(${hue} 100% 33%)`);
@@ -124,6 +136,12 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
       modeButton.classList.add("active");
       button.classList.remove("active");
       setOpen(false);
+      const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+      applyTheme(nextTheme);
+      localStorage.setItem("theme", nextTheme);
+    });
+    systemTheme.addEventListener("change", (event) => {
+      if (!localStorage.getItem("theme")) applyTheme(event.matches ? "dark" : "light");
     });
     slider.addEventListener("input", updateThemeColor);
     document.addEventListener("pointerdown", (event) => {

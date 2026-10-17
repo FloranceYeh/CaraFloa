@@ -242,6 +242,12 @@ const mainPages = getMainPages();
 
     const mediaQuery = matchMedia("(prefers-color-scheme: dark)");
     mediaQuery.addEventListener("change", draw);
+
+    const themeObserver = new MutationObserver(draw);
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
   };
 
   const setupPageGrid = () => {

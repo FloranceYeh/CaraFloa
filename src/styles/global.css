@@ -8,6 +8,22 @@
   --secondary-color: #99bb99;
 }
 
+:root[data-theme="dark"] {
+  --primary-background-color: #555555;
+  --secondary-background-color: #1a1a1a;
+  --primary-text-color: #fff;
+  --body-color: #272727;
+}
+
+body {
+  background-color: var(--body-color);
+}
+
+body,
+.main-wrapper {
+  transition: background-color 220ms ease, color 220ms ease;
+}
+
 * {
   margin: 0;
   padding: 0;
