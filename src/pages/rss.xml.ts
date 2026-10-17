@@ -11,7 +11,8 @@ const escapeXml = (value: string) =>
     .replaceAll("'", "&apos;");
 
 export const GET: APIRoute = async ({ site, url }) => {
-  const baseUrl = (site ?? new URL(url.origin)).toString().replace(/\/$/, "");
+  const configuredSite = import.meta.env.PUBLIC_SITE_URL?.trim();
+  const baseUrl = (configuredSite || site?.toString() || url.origin).replace(/\/$/, "");
   const now = Date.now();
   const sectionTitles = new Map(homeSections.map((section) => [section.id, section.title]));
   const articles = (await getArticles())

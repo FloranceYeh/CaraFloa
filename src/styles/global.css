@@ -120,12 +120,12 @@ a {
     --page-cell-edge-fade: 32px;
   }
   .main-wrapper {
-    grid-template-columns: 32px 1fr 32px;
+    grid-template-columns: 1fr;
     grid-template-rows: 88px 1fr 96px;
     grid-template-areas:
-      "blank-lt  topbar  blank-rt"
-      "blank0l   page    blank-rc"
-      "blank-lb  sidebar  blank-rb";
+      "topbar"
+      "page"
+      "sidebar";
   }
 
   * {

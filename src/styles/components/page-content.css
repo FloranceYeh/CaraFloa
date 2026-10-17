@@ -219,6 +219,7 @@
 @media (max-width: 768px) {
   .page-content {
     border-radius: var(--radius-xl);
+    margin: 0 var(--space-md);
   }
 
   .page-cell {

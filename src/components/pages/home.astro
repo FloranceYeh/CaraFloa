@@ -208,7 +208,9 @@ const defaultIndex = latestHomeIndex >= 0 ? latestHomeIndex : 0;
       "touchmove",
       (event) => {
         if (event.touches.length === 1) {
-          handleDragMove(event.touches[0].clientX, () => event.preventDefault());
+          handleDragMove(event.touches[0].clientX, () => {
+            if (event.cancelable) event.preventDefault();
+          });
         }
       },
       { passive: false },
