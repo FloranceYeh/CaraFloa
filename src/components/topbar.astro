@@ -1,5 +1,9 @@
 ---
 import "../styles/components/topbar.css";
+import { getArticles, latestPublishedPeriod } from "../lib/articles";
+
+const articles = await getArticles();
+const currentPeriod = latestPublishedPeriod(articles);
 ---
 
 <div class="topbar-wrapper">
@@ -10,8 +14,9 @@ import "../styles/components/topbar.css";
   <div class="island">
     <div class="island-container">
       <div class="clock"></div>
-      <div class="weather">
-        <i class="fa-solid fa-cloud" aria-hidden="true"></i>
+      <div class="period">
+        <i class="fa-solid fa-calendar-week" aria-hidden="true"></i>
+        <span class="period-label">{currentPeriod?.toUpperCase() ?? "暂无周期"}</span>
       </div>
     </div>
   </div>

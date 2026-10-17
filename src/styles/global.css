@@ -23,7 +23,7 @@
   --space-2xl: 3rem;
 
   /* 浅色主题 */
-  --body-color: #f5f5f7;
+  --body-color: #ececec;
   --primary-background-color: rgba(255, 255, 255, 0.85);
   --secondary-background-color: rgba(245, 245, 245, 0.95);
   --primary-text-color: #1d1d1f;
@@ -32,9 +32,9 @@
   --hover-overlay: rgba(0, 0, 0, 0.04);
 
   /* 主题色 */
-  --primary-color: hsl(111, 100%, 50%);
-  --primary-color-light: hsl(210, 100%, 96%);
-  --primary-color-dark: hsl(133, 100%, 42%);
+  --primary-color: hsl(110, 70%, 50%);
+  --primary-color-light: hsl(110, 70%, 96%);
+  --primary-color-dark: hsl(130, 70%, 42%);
   --primary-color-rgb: 0, 122, 255;
   --secondary-color: hsl(210, 15%, 65%);
 
@@ -60,8 +60,8 @@
   --border-color: rgba(255, 255, 255, 0.12);
   --hover-overlay: rgba(255, 255, 255, 0.06);
 
-  --primary-color-light: hsl(210, 80%, 20%);
-  --primary-color-dark: hsl(210, 100%, 60%);
+  --primary-color-light: hsl(110, 70%, 20%);
+  --primary-color-dark: hsl(110, 70%, 60%);
 
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);

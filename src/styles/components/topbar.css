@@ -71,7 +71,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-lg);
+  gap: var(--space-md);
   height: var(--secondary-size);
   background: var(--secondary-background-color);
   border-radius: var(--radius-full);
@@ -87,15 +87,26 @@
   letter-spacing: 0.02em;
 }
 
-.island .weather {
-  font-size: 1.25rem;
-  color: var(--primary-color);
-  display: grid;
-  place-items: center;
+.island .period {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: transform var(--transition-base);
 }
 
-.island .weather:hover {
+.island .period i {
+  color: var(--primary-color);
+  font-size: 1.125rem;
+}
+
+.island .period-label {
+  color: var(--primary-text-color);
+  font-size: 0.8125rem;
+  font-weight: 1000;
+  white-space: nowrap;
+}
+
+.island .period:hover {
   transform: scale(1.1);
 }
 

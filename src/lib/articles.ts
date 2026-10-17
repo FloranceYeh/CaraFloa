@@ -23,6 +23,16 @@ export const latestPublishedArticle = (articles: Article[], now = new Date()) =>
     .filter((article) => article.data.publishedAt.getTime() <= now.getTime())
     .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())[0];
 
+export const latestPublishedPeriod = (articles: Article[], now = new Date()) => {
+  const homeArticle = latestPublishedArticle(
+    articles.filter((article) =>
+      homeSections.some((section) => section.id === articleSection(article)),
+    ),
+    now,
+  );
+  return homeArticle?.data.period;
+};
+
 export const sectionArticle = (articles: Article[], section: HomeSection) =>
   articles
     .filter((article) => articleSection(article) === section.id)

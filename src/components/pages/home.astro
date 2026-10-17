@@ -6,11 +6,21 @@ import {
   getArticles,
   latestArticleForSection,
   latestPublishedArticle,
+  latestPublishedPeriod,
   sectionArticle,
 } from "../../lib/articles";
 
 const now = new Date();
 const articles = await getArticles();
+const currentPeriod = latestPublishedPeriod(articles, now);
+const publishedHomeArticles = articles.filter(
+  (article) =>
+    homeSections.some((section) => section.id === articleSection(article)) &&
+    article.data.publishedAt.getTime() <= now.getTime(),
+);
+const homeArticles = currentPeriod
+  ? articles.filter((article) => article.data.period === currentPeriod)
+  : articles;
 const formatDateTime = (date: Date) =>
   date.toLocaleString("zh-CN", {
     year: "numeric",
@@ -22,20 +32,20 @@ const formatDateTime = (date: Date) =>
   });
 const cards = homeSections.map((section) => ({
   section,
-  article: latestArticleForSection(articles, section, now),
-  nextArticle: sectionArticle(articles, section)
+  article: latestArticleForSection(homeArticles, section, now),
+  nextArticle: sectionArticle(homeArticles, section)
     .filter((a) => a.data.publishedAt.getTime() > now.getTime())
     .sort((a, b) => a.data.publishedAt.getTime() - b.data.publishedAt.getTime())[0],
 }));
 const latestHomeArticle = latestPublishedArticle(
-  articles.filter((article) =>
-    homeSections.some((section) => section.id === articleSection(article)),
+  publishedHomeArticles.filter(
+    (article) => !currentPeriod || article.data.period === currentPeriod,
   ),
   now,
 );
 const latestHomeSection = latestHomeArticle && articleSection(latestHomeArticle);
 const latestHomeIndex = cards.findIndex(({ section }) => section.id === latestHomeSection);
-const defaultIndex = latestHomeIndex >= 0 ? latestHomeIndex : Math.min(4, cards.length - 1);
+const defaultIndex = latestHomeIndex >= 0 ? latestHomeIndex : 0;
 ---
 
 <div class="home-view">
@@ -50,6 +60,9 @@ const defaultIndex = latestHomeIndex >= 0 ? latestHomeIndex : Math.min(4, cards.
       >
         {article ? (
           <a class="home-card-body" href={`/${section.id}/${article.data.id}`}>
+            {article.data.cover && (
+              <img src={article.data.cover} alt="" aria-hidden="true" loading="lazy" />
+            )}
             <span class="home-card-index">{String(index + 1).padStart(2, "0")}</span>
             <div class="home-section-title">{section.title}</div>
             <div class="home-card-content" data-state="published">

@@ -10,6 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "new:article": "node scripts/new-article.mjs",
     "beautify": "prettier --write \"src/**/*.{astro,ts,css}\""
   },
   "dependencies": {
