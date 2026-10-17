@@ -3,6 +3,7 @@
   --primary-size: 56px;
   --secondary-size: calc(var(--primary-size) * 0.75);
   --notch-size: 72px;
+  --page-cell-edge-fade: 90px;
 
   /* 圆角系统 */
   --radius-sm: 8px;

@@ -138,6 +138,15 @@
   overflow-y: auto;
   display: flex;
   justify-content: center;
+  mask-image:
+    linear-gradient(
+      to bottom,
+      transparent,
+      #000 var(--page-cell-edge-fade),
+      #000 calc(100% - var(--page-cell-edge-fade)),
+      transparent
+    );
+  mask-composite: intersect;
 }
 
 .articles::-webkit-scrollbar {
