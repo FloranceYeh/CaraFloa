@@ -5,6 +5,15 @@ import { getArticles, latestArticleForSection, sectionArticle } from "../../lib/
 
 const now = new Date();
 const articles = await getArticles();
+const formatDateTime = (date: Date) =>
+  date.toLocaleString("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 const cards = homeSections.map((section) => ({
   section,
   article: latestArticleForSection(articles, section, now),
@@ -33,7 +42,7 @@ const defaultIndex = Math.min(4, cards.length - 1);
               <strong class="home-card-title">{article.data.title}</strong>
               <p>{article.data.summary || section.summary}</p>
               <time datetime={article.data.publishedAt.toISOString()}>
-                {article.data.publishedAt.toLocaleString("zh-CN")}
+                {formatDateTime(article.data.publishedAt)}
               </time>
             </div>
           </a>

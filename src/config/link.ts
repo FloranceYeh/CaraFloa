@@ -9,17 +9,17 @@ export type LinkGroups = Record<string, Record<string, LinkItem>>;
 
 export const links: LinkGroups = {
   Frinends: {
-    1: {
-      url: "https://www.bilibili.com/",
-      ava: "",
-      name: "Bilibili",
-      des: "A popular video sharing website in China.",
+    Florance: {
+      url: "https://Florance.top/",
+      ava: "https://florance.top/images/avatar.jpg",
+      name: "Florance's Blog",
+      des: "It's Florance!",
     },
-    2: {
-      url: "https://www.zhihu.com/",
-      ava: "",
-      name: "Zhihu",
-      des: "A Chinese question-and-answer website.",
+    Github: {
+      url: "https://github.com/FloranceYeh",
+      ava: "https://florance.top/images/avatar.jpg",
+      name: "Florance's GitHub",
+      des: "A web-based platform for version control and collaboration.",
     },
   },
   Tools: {

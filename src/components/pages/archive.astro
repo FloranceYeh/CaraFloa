@@ -9,6 +9,7 @@ const articles = (await getArticles())
   )
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 const sectionTitle = new Map(homeSections.map((section) => [section.id, section.title]));
+const publishedSections = homeSections.filter((section) => !section.id.startsWith("unpublished-"));
 const periods = [
   ...new Set(articles.map((article) => article.data.period).filter(Boolean)),
 ] as string[];
@@ -46,7 +47,7 @@ const periods = [
           <button type="button" data-value="all">
             全部板块
           </button>
-          {homeSections.map((section) => (
+          {publishedSections.map((section) => (
             <button type="button" data-value={section.id}>
               {section.title}
             </button>
