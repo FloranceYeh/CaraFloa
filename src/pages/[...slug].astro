@@ -23,6 +23,7 @@ const item = pathItem ?? pageBySlug(Astro.params.slug ?? "");
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
+    <link rel="alternate" type="application/rss+xml" title={`${SiteTitle} RSS`} href="/rss.xml" />
     <title>{item.name} · {SiteTitle}</title>
     <ClientRouter />
   </head>
