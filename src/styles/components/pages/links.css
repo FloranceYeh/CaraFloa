@@ -4,7 +4,7 @@
   height: 100%;
   overflow: auto;
   display: block;
-  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.5rem, 5vw, 4rem);
+  padding: clamp(1.5rem, 5vw, 4rem) clamp(1.5rem, 5vw, 4rem);
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
 }

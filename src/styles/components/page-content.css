@@ -83,11 +83,27 @@
 .page-cell[data-grid-x="0"][data-grid-y="2"] {
   left: 0;
   top: 200%;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    var(--primary-color) var(--page-cell-edge-fade),
+    #000 calc(100% - var(--page-cell-edge-fade)),
+    transparent
+  );
+  mask-composite: intersect;
 }
 
 .page-cell[data-grid-x="0"][data-grid-y="3"] {
   left: 0;
   top: 300%;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    var(--primary-color) var(--page-cell-edge-fade),
+    #000 calc(100% - var(--page-cell-edge-fade)),
+    transparent
+  );
+  mask-composite: intersect;
 }
 
 .page-cell[data-grid-x="0"][data-grid-y="4"] {
