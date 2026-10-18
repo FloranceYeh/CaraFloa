@@ -2,3 +2,6 @@ dist/
 .astro/
 node_modules/
 .vscode/
+
+# Content repository checkout
+.content-repository/

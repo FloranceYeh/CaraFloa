@@ -22,6 +22,7 @@ CaraFloa 是一个以“周期性内容”和“空间化导航”为核心的�
 - 集成 Font Awesome 图标
 - 支持 RSS 输出
 - 提供命令行工具快速创建文章
+- 支持将站点代码与公开内容仓库解耦，在 GitHub Actions 构建时注入文章、配置和图片
 
 ## 技术栈
 
@@ -35,6 +36,141 @@ CaraFloa 是一个以“周期性内容”和“空间化导航”为核心的�
 - Prettier
 
 ## 开始使用
+
+### 内容仓库
+
+站点支持将数据存放在独立的公开仓库中。内容仓库建议使用以下结构：
+
+```text
+CaraFloa-content/
+├── articles/                 # Markdown 文章，对应站点的 src/content/
+├── config/                   # 站点内容配置，对应站点的 src/config/
+└── images/                   # 图片资源，对应站点的 public/images/
+```
+
+站点仓库会保留 `src/content/`、`src/config/` 和 `public/images/` 作为默认展示模板。
+GitHub Actions 构建时，外部内容仓库的对应目录会覆盖这些模板目录；本地未同步外部
+内容时，项目仍然可以直接运行。`src/content.config.ts` 始终保留在站点仓库中，因为它
+是站点的内容 schema，而不是文章数据。
+
+本地同步内容仓库：
+
+```powershell
+$env:CONTENT_REPOSITORY = "FloranceYeh/CaraFloa-content"
+npm run sync:content
+```
+
+也可以指定已经 checkout 到本地的内容仓库目录：
+
+```powershell
+$env:CONTENT_SOURCE_DIR = ".content-repository"
+npm run sync:content
+```
+
+同步脚本会将以下目录复制到站点：
+
+```text
+articles/ -> src/content/
+config/   -> src/config/
+images/   -> public/images/
+```
+
+### GitHub Actions 构建
+
+站点仓库包含 [`.github/workflows/build.yml`](./.github/workflows/build.yml)。
+它会 checkout 站点和内容仓库，执行内容同步后再运行 Astro build。
+
+在站点仓库的 **Settings → Secrets and variables → Actions → Variables** 中配置：
+
+| 变量 | 示例 | 说明 |
+| --- | --- | --- |
+| `CONTENT_REPOSITORY` | `FloranceYeh/CaraFloa-content` | 公开内容仓库 |
+| `CONTENT_REF` | `main` | 内容仓库分支或 tag，可选 |
+| `PUBLIC_SITE_URL` | `https://example.com` | 站点 URL，可选 |
+
+内容仓库更新后，可以通过 `repository_dispatch` 触发站点重新构建：
+
+```yaml
+name: Notify site
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.SITE_REPOSITORY_TOKEN }}
+          repository: FloranceYeh/CaraFloa
+          event-type: content-updated
+```
+
+由于内容仓库是公开仓库，Actions checkout 不需要额外的内容读取 token。
+触发站点 workflow 的 `SITE_REPOSITORY_TOKEN` 只需要配置在内容仓库中。
+
+### 使用 Netlify 等构建平台
+
+项目包含 [`netlify.toml`](./netlify.toml)，Netlify 会使用以下构建流程：
+
+```text
+npm run sync:content && npm run build
+```
+
+在 Netlify 项目的 **Site configuration → Environment variables** 中添加：
+
+| 变量 | 示例 | 说明 |
+| --- | --- | --- |
+| `CONTENT_REPOSITORY` | `FloranceYeh/CaraFloa-content` | 公开内容仓库 |
+| `CONTENT_REF` | `main` | 内容仓库分支或 tag，可选 |
+| `PUBLIC_SITE_URL` | `https://example.netlify.app` | 站点 URL，可选 |
+
+Netlify 默认会：
+
+1. checkout 站点仓库；
+2. 安装 `package.json` 中的依赖；
+3. 使用 `CONTENT_REPOSITORY` 拉取内容仓库；
+4. 用内容仓库的 `articles/`、`config/` 和 `images/` 覆盖模板目录；
+5. 执行 `npm run build`；
+6. 发布 `dist/` 目录。
+
+内容仓库更新后，Netlify 不一定会自动感知外部仓库的提交。可以使用以下任一方式
+触发重新部署：
+
+- 在 Netlify 控制台手动点击 **Deploys → Trigger deploy**
+- 创建 Netlify Build Hook，并在内容仓库的 GitHub Actions 中调用它
+
+内容仓库调用 Netlify Build Hook 的示例：
+
+```yaml
+name: Trigger Netlify deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Netlify build hook
+        run: curl -X POST -d '{}' "${{ secrets.NETLIFY_BUILD_HOOK_URL }}"
+```
+
+`NETLIFY_BUILD_HOOK_URL` 应配置在内容仓库的 GitHub Actions Secrets 中，不要直接写入
+公开仓库文件。
+
+如果使用 Vercel、Cloudflare Pages 等平台，只需要将构建命令设置为：
+
+```bash
+npm run sync:content && npm run build
+```
+
+并配置同样的 `CONTENT_REPOSITORY`、`CONTENT_REF` 和 `PUBLIC_SITE_URL` 环境变量即可。
 
 ### 环境要求
 

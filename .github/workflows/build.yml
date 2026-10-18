@@ -1,0 +1,56 @@
+name: Build site
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - content-updated
+
+permissions:
+  contents: read
+
+env:
+  CONTENT_REPOSITORY: ${{ vars.CONTENT_REPOSITORY }}
+  CONTENT_REF: ${{ vars.CONTENT_REF || 'main' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout site
+        uses: actions/checkout@v4
+
+      - name: Checkout content
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.CONTENT_REPOSITORY }}
+          ref: ${{ env.CONTENT_REF }}
+          path: .content-repository
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync content
+        run: npm run sync:content
+
+      - name: Build
+        env:
+          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: carafloa-dist
+          path: dist/
