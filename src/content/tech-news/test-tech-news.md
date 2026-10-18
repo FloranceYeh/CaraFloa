@@ -4,6 +4,9 @@ section: tech-news
 period: p1
 title: 测试文章：技术新闻的阅读方法
 summary: 用于验证技术新闻板块的标题、摘要和发布时间展示。
+tags:
+  - 新闻
+  - 技术
 publishedAt: 2026-10-17T12:00:00+08:00
 ---
 

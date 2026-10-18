@@ -4,6 +4,9 @@ section: weekly-topic
 period: p1
 title: 测试文章：我们为什么需要持续记录
 summary: 用于验证每周议题板块的文章展示和文章导航。
+tags:
+  - 议题
+  - 思考
 publishedAt: 2026-10-17T10:00:00+08:00
 ---
 

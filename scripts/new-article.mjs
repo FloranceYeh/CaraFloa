@@ -28,6 +28,12 @@ const articleId = options.id || slugify(title) || `article-${timestamp()}`;
 const summary = options.summary || "";
 const period = options.period;
 const cover = options.cover;
+const tags = options.tags
+  ? options.tags
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean)
+  : undefined;
 const publishedAt = options.publishedAt || new Date().toISOString();
 const body = options.content || options.body || `# ${title}\n\n在这里开始写文章。\n`;
 
@@ -48,6 +54,7 @@ const fields = [
   ["title", title],
   ["summary", summary],
   ["cover", cover],
+  ["tags", tags],
   ["publishedAt", publishedAt],
 ];
 const frontmatter = fields
@@ -98,6 +105,7 @@ function printUsage() {
   --summary <摘要>          文章摘要
   --period <周期>           例如 p2
   --cover <路径>            头图路径，例如 /images/cover.jpg
+  --tags <标签>             逗号分隔的标签，例如 astro,前端
   --published-at <时间>     发布时间，默认当前时间
   --content <正文>          Markdown 正文
   --help                    显示帮助`);

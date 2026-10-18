@@ -48,8 +48,17 @@ const Content = article ? (await render(article)).Content : undefined;
           <h1 class="article-title">{article.data.title}</h1>
           {article.data.summary && <p class="article-summary">{article.data.summary}</p>}
           <time class="article-date" datetime={article.data.publishedAt.toISOString()}>
+            <i class="fa-regular fa-calendar" aria-hidden="true"></i>
             {article.data.publishedAt.toLocaleString("zh-CN")}
           </time>
+          {article.data.tags.length > 0 && (
+            <div class="article-tags" aria-label="文章标签">
+              <i class="fa-solid fa-tags" aria-hidden="true"></i>
+              {article.data.tags.map((tag) => (
+                <span>#{tag}</span>
+              ))}
+            </div>
+          )}
           <div class="article-content">
             <Content />
           </div>

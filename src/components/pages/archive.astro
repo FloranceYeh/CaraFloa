@@ -13,6 +13,9 @@ const publishedSections = homeSections.filter((section) => !section.id.startsWit
 const periods = [
   ...new Set(articles.map((article) => article.data.period).filter(Boolean)),
 ] as string[];
+const tags = [...new Set(articles.flatMap((article) => article.data.tags))].sort((a, b) =>
+  a.localeCompare(b, "zh-CN"),
+);
 ---
 
 <main class="archive-page" aria-label="归档">
@@ -72,6 +75,24 @@ const periods = [
             ))}
           </div>
         </div>
+        <div class="archive-select-label archive-tag-filter" data-archive-filter="tags">
+          <span class="hint">标签</span>
+          <button type="button" class="archive-select-button" aria-expanded="false">
+            <span data-archive-value>全部标签</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="archive-options" hidden>
+            <button type="button" data-value="all" aria-pressed="true">
+              全部标签
+            </button>
+            {tags.map((tag) => (
+              <button type="button" data-value={tag} aria-pressed="false">
+                <i class="fa-regular fa-square" aria-hidden="true"></i>
+                {tag}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
 
@@ -82,6 +103,7 @@ const periods = [
           href={`/${articleSection(article)}/${article.data.id}`}
           data-section={articleSection(article)}
           data-period={article.data.period ?? ""}
+          data-tags={JSON.stringify(article.data.tags)}
           data-search={`${article.data.title} ${article.data.summary}`.toLowerCase()}
         >
           <div class="archive-item-main">
@@ -90,6 +112,13 @@ const periods = [
             </span>
             <h2>{article.data.title}</h2>
             <p>{article.data.summary}</p>
+            {article.data.tags.length > 0 && (
+              <div class="archive-item-tags" aria-label="文章标签">
+                {article.data.tags.map((tag) => (
+                  <span>#{tag}</span>
+                ))}
+              </div>
+            )}
           </div>
           <div class="archive-item-meta">
             {article.data.period && <span>{article.data.period}</span>}
@@ -114,7 +143,7 @@ const periods = [
     const filters = [...document.querySelectorAll<HTMLElement>("[data-archive-filter]")];
     const count = document.querySelector<HTMLElement>("[data-result-count]");
     const empty = document.querySelector<HTMLElement>("[data-archive-empty]");
-    if (!list || !search || filters.length !== 2 || !count || !empty) return;
+    if (!list || !search || filters.length !== 3 || !count || !empty) return;
 
     const items = [...list.querySelectorAll<HTMLElement>(".archive-item")];
     const update = () => {
@@ -128,7 +157,15 @@ const periods = [
           .value;
         const matchesSection = section === "all" || item.dataset.section === section;
         const matchesPeriod = period === "all" || item.dataset.period === period;
-        item.hidden = !(matchesKeyword && matchesSection && matchesPeriod);
+        const selectedTags =
+          filters
+            .find((filter) => filter.dataset.archiveFilter === "tags")
+            ?.dataset.value?.split("|")
+            .filter(Boolean) ?? [];
+        const itemTags = JSON.parse(item.dataset.tags ?? "[]") as string[];
+        const matchesTags =
+          selectedTags.length === 0 || selectedTags.some((tag) => itemTags.includes(tag));
+        item.hidden = !(matchesKeyword && matchesSection && matchesPeriod && matchesTags);
         return !item.hidden;
       });
       count.textContent = `${visible.length} 篇文章`;
@@ -153,10 +190,37 @@ const periods = [
       });
       options.querySelectorAll<HTMLButtonElement>("[data-value]").forEach((option) => {
         option.addEventListener("click", () => {
-          filter.dataset.value = option.dataset.value ?? "all";
-          value.textContent = option.textContent;
-          options.hidden = true;
-          button.setAttribute("aria-expanded", "false");
+          if (filter.dataset.archiveFilter !== "tags") {
+            filter.dataset.value = option.dataset.value ?? "all";
+            value.textContent = option.textContent;
+            options.hidden = true;
+            button.setAttribute("aria-expanded", "false");
+            update();
+            return;
+          }
+
+          const selected = new Set((filter.dataset.value ?? "").split("|").filter(Boolean));
+          if (option.dataset.value === "all") {
+            selected.clear();
+          } else if (selected.has(option.dataset.value ?? "")) {
+            selected.delete(option.dataset.value ?? "");
+          } else {
+            selected.add(option.dataset.value ?? "");
+          }
+          filter.dataset.value = [...selected].join("|");
+          options.querySelectorAll<HTMLButtonElement>("[data-value]").forEach((tagOption) => {
+            const isAll = tagOption.dataset.value === "all";
+            const isSelected = !isAll && selected.has(tagOption.dataset.value ?? "");
+            tagOption.setAttribute(
+              "aria-pressed",
+              String(isAll ? selected.size === 0 : isSelected),
+            );
+            const icon = tagOption.querySelector("i");
+            if (icon) {
+              icon.className = isSelected ? "fa-regular fa-square-check" : "fa-regular fa-square";
+            }
+          });
+          value.textContent = selected.size > 0 ? `已选 ${selected.size} 个标签` : "全部标签";
           update();
         });
       });

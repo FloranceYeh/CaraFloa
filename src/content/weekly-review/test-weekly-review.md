@@ -4,6 +4,9 @@ section: weekly-review
 period: p1
 title: 测试文章：本周完成了什么
 summary: 用于验证周汇小结板块的文章列表、详情页和周期信息。
+tags:
+  - 周报
+  - 总结
 publishedAt: 2026-10-17T13:00:00+08:00
 ---
 

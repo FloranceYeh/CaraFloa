@@ -11,6 +11,7 @@ const articles = defineCollection({
     title: z.string(),
     summary: z.string().optional().default(""),
     cover: z.string().optional(),
+    tags: z.array(z.string()).optional().default([]),
     publishedAt: z.coerce.date(),
   }),
 });

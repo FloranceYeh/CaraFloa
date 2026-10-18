@@ -63,12 +63,14 @@
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  flex-wrap: wrap;
 }
 
 .archive-search,
 .archive-select-label {
   flex-grow: 1;
   position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: var(--space-sm);
@@ -86,6 +88,8 @@
 
 .archive-search:focus-within,
 .archive-select-label:focus-within {
+  position: relative;
+  z-index: 30;
   box-shadow: var(--shadow-md);
   border-color: var(--primary-color);
 }
@@ -151,7 +155,7 @@
 
 .archive-options {
   position: absolute;
-  z-index: 10;
+  z-index: 1;
   top: calc(100% + var(--space-sm));
   right: 0;
   min-width: 100%;
@@ -193,6 +197,17 @@
   font-size: 0.9375rem;
   cursor: pointer;
   transition: all var(--transition-fast);
+}
+
+.archive-options button i {
+  width: 1rem;
+  margin-right: var(--space-xs);
+  color: var(--secondary-text-color);
+}
+
+.archive-options button:hover i,
+.archive-options button:focus-visible i {
+  color: white;
 }
 
 .archive-options button:hover,
@@ -267,6 +282,21 @@
   line-height: 1.6;
 }
 
+.archive-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+}
+
+.archive-item-tags span {
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  color: var(--primary-color);
+  background: rgba(var(--primary-color-rgb), 0.1);
+  font-size: 0.75rem;
+}
+
 .archive-item-meta {
   display: flex;
   align-items: center;
@@ -331,18 +361,30 @@
 
   .archive-select-wrapper {
     width: 100%;
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
     gap: var(--space-sm);
+    flex-wrap: nowrap;
   }
 
   .archive-select-label {
     justify-content: space-between;
+    padding: 0 var(--space-xs);
   }
 
   .archive-options {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
     right: 0;
     left: 0;
+    max-height: min(18rem, 50vh);
+    overflow-y: auto;
+    padding: var(--space-xs) 0;
+  }
+
+  .archive-options button {
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .archive-item {

@@ -4,6 +4,9 @@ section: open-source
 period: p1
 title: 测试文章：一个小而完整的开源项目
 summary: 用于验证开源项目板块的文章展示、详情页和归档筛选。
+tags:
+  - 开源
+  - 项目
 publishedAt: 2026-10-17T09:00:00+08:00
 ---
 

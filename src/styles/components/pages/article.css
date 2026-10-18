@@ -198,11 +198,36 @@
 }
 
 .article-date {
-  display: block;
-  margin-bottom: var(--space-2xl);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
   color: var(--secondary-text-color);
   font-size: 0.9375rem;
   font-variant-numeric: tabular-nums;
+}
+
+.article-date i,
+.article-tags > i {
+  color: var(--primary-color);
+  font-size: 0.875rem;
+}
+
+.article-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-2xl);
+}
+
+.article-tags span {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid rgba(var(--primary-color-rgb), 0.25);
+  border-radius: var(--radius-sm);
+  color: var(--primary-color);
+  background: rgba(var(--primary-color-rgb), 0.1);
+  font-size: 0.8125rem;
 }
 
 .article-content {
