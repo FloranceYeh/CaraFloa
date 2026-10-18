@@ -207,9 +207,13 @@
   font-variant-numeric: tabular-nums;
 }
 
-.article-date i,
+.article-date i {
+  color: var(--secondary-color);
+  font-size: 0.875rem;
+}
+
 .article-tags > i {
-  color: var(--primary-color);
+  color: var(--secondary-color);
   font-size: 0.875rem;
 }
 
@@ -223,10 +227,10 @@
 
 .article-tags span {
   padding: 0.25rem 0.6rem;
-  border: 1px solid rgba(var(--primary-color-rgb), 0.25);
+  border: 1px solid var(--secondary-color);
   border-radius: var(--radius-sm);
-  color: var(--primary-color);
-  background: rgba(var(--primary-color-rgb), 0.1);
+  color: var(--secondary-color);
+  background: color-mix(in srgb, var(--secondary-color) 12%, transparent);
   font-size: 0.8125rem;
 }
 
@@ -274,6 +278,34 @@
   text-underline-offset: 3px;
 }
 
+.article-content img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin: var(--space-xl) auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  object-fit: contain;
+}
+
+.article-content figure {
+  margin: var(--space-xl) 0;
+}
+
+.article-content figure img {
+  margin: 0 auto;
+}
+
+.article-content figcaption {
+  margin-top: var(--space-sm);
+  color: var(--secondary-text-color);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
 .article-content code {
   padding: 0.2em 0.4em;
   background: var(--secondary-background-color);
@@ -302,18 +334,130 @@
 .article-content blockquote {
   margin: var(--space-xl) 0;
   padding-left: var(--space-lg);
-  border-left: 3px solid var(--primary-color);
+  border-left: 3px solid var(--secondary-color);
   color: var(--secondary-text-color);
   font-style: italic;
 }
 
 .article-content ul,
 .article-content ol {
-  padding-left: var(--space-xl);
+  margin: var(--space-lg) 0;
+  padding-left: 1.5em;
 }
 
 .article-content li {
-  margin-top: var(--space-sm);
+  margin-top: var(--space-xs);
+  padding-left: var(--space-xs);
+}
+
+.article-content li::marker {
+  color: var(--secondary-color);
+  font-weight: 600;
+}
+
+.article-content li > ul,
+.article-content li > ol {
+  margin-top: var(--space-xs);
+  margin-bottom: 0;
+}
+
+.article-content ul.contains-task-list {
+  padding-left: 0;
+  list-style: none;
+}
+
+.article-content .task-list-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding-left: 0;
+}
+
+.article-content .task-list-item input[type="checkbox"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.article-content .task-list-item::before {
+  flex: 0 0 auto;
+  width: 1.1em;
+  height: 1.1em;
+  margin-top: 0.35em;
+  border: 1.5px solid var(--secondary-text-color);
+  border-radius: 4px;
+  background: var(--primary-background-color);
+  box-sizing: border-box;
+  content: "";
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.article-content .task-list-item:has(input[type="checkbox"]:checked)::before {
+  border-color: var(--primary-color);
+  background: var(--secondary-color);
+}
+
+.article-content .task-list-item:has(input[type="checkbox"]:checked)::after {
+  position: absolute;
+  width: 0.25em;
+  height: 0.55em;
+  margin: 0.5em 0 0 0.38em;
+  border: solid white;
+  border-width: 0 0.12em 0.12em 0;
+  content: "";
+  transform: rotate(45deg);
+}
+
+.article-content table {
+  width: 100%;
+  max-width: 100%;
+  margin: var(--space-xl) 0;
+  table-layout: fixed;
+  border-spacing: 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--secondary-background-color);
+  box-shadow: var(--shadow-sm);
+  font-size: 0.9375rem;
+}
+
+.article-content th,
+.article-content td {
+  padding: var(--space-sm) var(--space-md);
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.article-content th {
+  color: var(--primary-text-color);
+  background: color-mix(in srgb, var(--secondary-color) 12%, transparent);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.article-content tr:last-child td {
+  border-bottom: 0;
+}
+
+.article-content th:last-child,
+.article-content td:last-child {
+  border-right: 0;
+}
+
+.article-content hr {
+  margin: var(--space-2xl) 0;
+  border: 0;
+  border-top: 1px solid var(--border-color);
 }
 
 @media (max-width: 768px) {

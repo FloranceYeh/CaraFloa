@@ -252,7 +252,7 @@
     var(--secondary-background-color) 0%,
     rgba(var(--primary-color-rgb), 0.08) 100%
   );
-  border-color: var(--primary-color);
+  border-color: var(--secondary-color);
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
@@ -292,8 +292,9 @@
 .archive-item-tags span {
   padding: 0.2rem 0.5rem;
   border-radius: var(--radius-sm);
-  color: var(--primary-color);
-  background: rgba(var(--primary-color-rgb), 0.1);
+  border: 1px solid var(--secondary-color);
+  color: var(--secondary-color);
+  background: color-mix(in srgb, var(--secondary-color) 12%, transparent);
   font-size: 0.75rem;
 }
 
@@ -308,8 +309,8 @@
 }
 
 .archive-item-meta i {
-  color: var(--primary-color);
-  font-size: 0.8125rem;
+  color: var(--secondary-color);
+  font-size: 1rem;
 }
 
 .archive-empty {

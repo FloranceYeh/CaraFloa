@@ -55,3 +55,5 @@ p = 0.5 \times blue + 0.3 \times silence + 0.2 \times shadow
 $$
 
 这个式子没有实际用途，正如窗外那朵云没有目的地一样。
+
+![alt text](https://florance.top/images/avatar.jpg)
