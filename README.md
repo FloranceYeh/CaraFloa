@@ -164,7 +164,49 @@ jobs:
 `NETLIFY_BUILD_HOOK_URL` 应配置在内容仓库的 GitHub Actions Secrets 中，不要直接写入
 公开仓库文件。
 
-如果使用 Vercel、Cloudflare Pages 等平台，只需要将构建命令设置为：
+### 使用 Vercel 构建
+
+项目包含 [`vercel.json`](./vercel.json)，导入项目后 Vercel 会使用以下配置：
+
+```text
+安装命令：npm ci
+构建命令：npm run sync:content && npm run build
+输出目录：dist
+框架预设：Astro
+Node.js：22.x
+```
+
+在 Vercel 项目的 **Settings → Environment Variables** 中添加以下变量，并选择
+需要部署的环境（通常选择 Production 和 Preview）：
+
+| 变量 | 示例 | 说明 |
+| --- | --- | --- |
+| `CONTENT_REPOSITORY` | `FloranceYeh/CaraFloa-content` | 公开内容仓库 |
+| `CONTENT_REF` | `main` | 内容仓库分支或 tag，可选 |
+| `PUBLIC_SITE_URL` | `https://carafloa.vercel.app` | 站点 URL，可选 |
+
+Vercel 的构建流程是：
+
+1. checkout 站点仓库；
+2. 安装 npm 依赖；
+3. 拉取内容仓库；
+4. 用 `articles/`、`config/` 和 `images/` 覆盖站点模板目录；
+5. 执行 Astro build；
+6. 发布 `dist/` 目录。
+
+内容仓库更新后，在 Vercel 项目的 **Settings → Git → Deploy Hooks** 中创建
+Deploy Hook，复制 URL 并配置到内容仓库的 GitHub Actions Secret：
+
+```text
+VERCEL_DEPLOY_HOOK_URL=<Vercel Deploy Hook URL>
+```
+
+内容仓库推送到 `main` 后，Actions 会调用该 URL 触发 Vercel 重新构建。
+Deploy Hook URL 只应保存为 Secret，不要写入公开文件。
+
+### 使用 Cloudflare Pages 等平台
+
+只需要将构建命令设置为：
 
 ```bash
 npm run sync:content && npm run build

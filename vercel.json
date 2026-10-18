@@ -1,0 +1,6 @@
+{
+  "framework": "astro",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run sync:content && npm run build",
+  "outputDirectory": "dist"
+}
