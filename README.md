@@ -16,6 +16,7 @@ CaraFloa 是一个以“周期性内容”和“空间化导航”为核心的�
   - 按周期筛选
   - 同时选择多个 tags 过滤文章
 - 支持 Markdown 表格、列表、任务列表、图片和代码块样式
+- 支持 GitHub Flavored Markdown：表格、删除线、任务列表和自动链接
 - 支持数学公式和 KaTeX 渲染
 - 响应式布局，适配桌面端和窄屏设备
 - 提供深色主题
@@ -336,6 +337,14 @@ publishedAt: 2026-10-18T12:00:00+08:00
 | `cover` | string，可选 | 封面图片路径 |
 | `tags` | string[]，可选 | 一个或多个文章标签 |
 | `publishedAt` | date | 发布时间，未来时间的文章不会公开显示 |
+
+文章正文支持 GitHub 风格的五类提示框：`NOTE`、`TIP`、`IMPORTANT`、`WARNING` 和
+`CAUTION`。可用斜线自定义显示标题，例如：
+
+```markdown
+> [!NOTE/提示]
+> 这里写需要强调的说明。
+```
 
 ## 目录结构
 

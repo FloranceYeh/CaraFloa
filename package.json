@@ -19,6 +19,8 @@
     "@fortawesome/fontawesome-free": "^7.3.1",
     "astro": "^7.3.8",
     "rehype-katex": "^7.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-github-blockquote-alert": "^2.1.0",
     "remark-math": "^6.0.0"
   },
   "devDependencies": {

@@ -2,7 +2,9 @@
 import { defineConfig } from 'astro/config';
 import { unified } from '@astrojs/markdown-remark';
 import rehypeKatex from 'rehype-katex';
+import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+import { remarkAlert } from 'remark-github-blockquote-alert';
 import { join, resolve } from 'node:path';
 import { loadEnv } from 'vite';
 import devContent from './scripts/dev-content.mjs';
@@ -41,7 +43,7 @@ export default defineConfig({
     },
     markdown: {
       processor: unified({
-        remarkPlugins: [remarkMath],
+        remarkPlugins: [remarkGfm, remarkMath, [remarkAlert, { legacyTitle: true }]],
         rehypePlugins: [rehypeKatex],
       }),
     },
