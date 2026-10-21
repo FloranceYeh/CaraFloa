@@ -140,6 +140,7 @@
   -webkit-overflow-scrolling: touch;
   display: flex;
   justify-content: center;
+  --page-cell-edge-fade: 32px;
   mask-image: linear-gradient(
     to bottom,
     transparent,
@@ -183,7 +184,7 @@
 
 .article-title {
   margin: 0 0 var(--space-lg) 0;
-  font-size: clamp(2rem, 6vw, 3.75rem);
+  font-size: clamp(2rem, 6vw, 3rem);
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -336,7 +337,6 @@
   padding-left: var(--space-lg);
   border-left: 3px solid var(--secondary-color);
   color: var(--secondary-text-color);
-  font-style: italic;
 }
 
 .article-content ul,
@@ -426,6 +426,7 @@
   background: var(--secondary-background-color);
   box-shadow: var(--shadow-sm);
   font-size: 0.9375rem;
+  overflow: hidden;
 }
 
 .article-content th,
@@ -442,7 +443,6 @@
   color: var(--primary-text-color);
   background: color-mix(in srgb, var(--secondary-color) 12%, transparent);
   font-weight: 600;
-  white-space: nowrap;
 }
 
 .article-content tr:last-child td {
