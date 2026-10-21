@@ -5,7 +5,7 @@ import Sidebar from "../../components/sidebar.astro";
 import PageContent from "../../components/page-content.astro";
 import "../../styles/global.css";
 
-import { SiteTitle } from "../../config/site";
+import { SiteTitle } from "@content-config/site";
 import { getArticles, articleSection, homeSections } from "../../lib/articles";
 
 export async function getStaticPaths() {

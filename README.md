@@ -233,6 +233,27 @@ npm run dev
 
 开发服务器启动后，访问终端输出的本地地址。
 
+本地开发时引用外部内容仓库，可以设置 `CONTENT_SOURCE_DIR` 后启动：
+
+```powershell
+$env:CONTENT_SOURCE_DIR = "E:\Code\CaraFloa-content"
+npm run dev
+```
+
+也可以在项目根目录的 `.env` 文件中配置（可从 `.env.example` 复制）：
+
+```dotenv
+CONTENT_SOURCE_DIR=../CaraFloa-content
+```
+
+支持绝对路径和相对于站点项目根目录的路径。dev 启动时会将外部
+`articles/`、`config/`、`images/` 路由为开发数据源；运行期间新增、修改、删除文件也会
+自动触发 Astro 刷新，无需复制文件或重复执行 `sync:content`。外部仓库必须包含
+这三个目录。未设置此变量时，直接使用项目内的内容。
+
+开发服务器不会覆盖项目内的模板目录，停止 dev 后项目文件也不会发生变化。生产
+构建仍使用现有的 `npm run sync:content && npm run build` 流程。
+
 ### 构建生产版本
 
 ```bash

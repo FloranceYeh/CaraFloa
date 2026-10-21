@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { articleSection, getArticles, homeSections } from "../lib/articles";
-import { SiteTitle } from "../config/site";
+import { SiteTitle } from "@content-config/site";
 
 const escapeXml = (value: string) =>
   value

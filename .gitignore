@@ -2,6 +2,9 @@ dist/
 .astro/
 node_modules/
 .vscode/
+.env
+.env.*
+!.env.example
 
 # Content repository checkout
 .content-repository/

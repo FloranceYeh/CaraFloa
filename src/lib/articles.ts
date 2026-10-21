@@ -1,5 +1,5 @@
 import { getCollection, type CollectionEntry } from "astro:content";
-import { homeSections, type HomeSection } from "../config/home";
+import { homeSections, type HomeSection } from "@content-config/home";
 
 export type Article = CollectionEntry<"articles">;
 export const getArticles = () => getCollection("articles");
