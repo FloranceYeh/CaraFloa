@@ -282,6 +282,7 @@
 
   .sidebar-wrapper .upper {
     align-self: center;
+    justify-self: start;
   }
 
   .sidebar-wrapper .upper .menu {
@@ -298,6 +299,7 @@
 
   .sidebar-wrapper .lower {
     align-self: center;
+    justify-self: end;
     flex-direction: row;
     gap: 4px;
   }
@@ -316,10 +318,10 @@
   }
 
   .sidebar-wrapper .color-slider {
-    left: 50%;
+    left: 0;
     top: auto;
     bottom: calc(100% + 12px);
-    width: 180px;
+    width: 160px;
     height: var(--primary-size);
     padding: 0 var(--space-md);
     background: var(--primary-background-color);
@@ -345,5 +347,6 @@
   .sidebar-wrapper .color-slider-input {
     transform: translate(-50%, -50%) rotate(0deg);
     width: 140px;
+    left: 52%;
   }
 }

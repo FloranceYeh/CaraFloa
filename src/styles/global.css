@@ -119,7 +119,7 @@ a {
 /* 移动端适配 */
 @media (max-width: 768px) {
   :root {
-    --page-cell-edge-fade: 32px;
+    --page-cell-edge-fade: 24px;
     --notch-size: 64px;
     --notch-radius: 24px;
   }
