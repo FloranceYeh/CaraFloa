@@ -1,5 +1,6 @@
 ---
 import "../../styles/components/pages/comments.css";
+import "@waline/client/style";
 import { articleSection, getArticles, homeSections } from "../../lib/articles";
 
 interface Props {
@@ -31,10 +32,20 @@ const sectionTitle = homeSections.find((item) => item.id === section)?.title ?? 
       )}
     </header>
 
-    <section class="comments-empty" aria-live="polite">
-      <i class="fa-regular fa-comments" aria-hidden="true"></i>
-      <h2>暂时还没有评论</h2>
-      <p>这篇文章还没有评论，欢迎稍后再来看看。</p>
+    <section
+      class="comments-panel"
+      aria-label="评论区"
+      data-waline-server-url={import.meta.env.PUBLIC_WALINE_SERVER_URL}
+      data-waline-path={`/${section}/${articleId}`}
+    >
+      <div class="waline" aria-live="polite"></div>
+      {!import.meta.env.PUBLIC_WALINE_SERVER_URL && (
+        <div class="comments-unavailable">
+          <i class="fa-regular fa-comments" aria-hidden="true"></i>
+          <h2>评论服务尚未配置</h2>
+          <p>请设置 PUBLIC_WALINE_SERVER_URL 后启用评论。</p>
+        </div>
+      )}
     </section>
   </div>
 </div>

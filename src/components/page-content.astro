@@ -151,6 +151,39 @@ const mainPages = getMainPages();
 </main>
 
 <script>
+  import { init as initWaline } from "@waline/client";
+
+  const mountWaline = (root: ParentNode = document) => {
+    root
+      .querySelectorAll<HTMLElement>(".comments-panel[data-waline-server-url]")
+      .forEach((panel) => {
+        const serverURL = panel.dataset.walineServerUrl?.trim();
+        const el = panel.querySelector<HTMLElement>(".waline");
+        if (!serverURL || !el || el.dataset.walineMounted === "true") return;
+
+        el.dataset.walineMounted = "true";
+        initWaline({
+          el,
+          serverURL,
+          path: panel.dataset.walinePath || window.location.pathname,
+          lang: "zh-CN",
+          pageview: false,
+          dark: "auto",
+          meta: ["nick", "mail"],
+          emoji: [
+            "https://unpkg.com/@waline/emojis@1.4.0/tw-emoji"
+          ],
+        });
+      });
+  };
+
+  window.addEventListener("waline:mount", (event) => {
+    const root = (event as CustomEvent<HTMLElement>).detail;
+    mountWaline(root || document);
+  });
+
+  mountWaline();
+
   const setupBackground = () => {
     const canvas = document.querySelector<HTMLCanvasElement>(".background-canvas");
     const content = document.querySelector<HTMLElement>(".page-content");
@@ -419,6 +452,9 @@ const mainPages = getMainPages();
         if (!nextContent) throw new Error(`Page content is missing: ${contentSelector}`);
         cell.replaceChildren(nextContent);
         if (contentSelector === ".article-wrapper") setupArticleToolbar(cell);
+        if (pagePath === "/comments") {
+          window.dispatchEvent(new CustomEvent("waline:mount", { detail: cell }));
+        }
         document.title = parsed.title;
       }
 

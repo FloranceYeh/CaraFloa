@@ -70,6 +70,17 @@
   mask-composite: intersect;
 }
 
+.page-cell[data-page-path="/comments"] {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    var(--primary-color) var(--page-cell-edge-fade),
+    #000 calc(100% - var(--page-cell-edge-fade)),
+    transparent
+  );
+  mask-composite: intersect;
+}
+
 .page-cell[data-page-path="/article"] {
   mask-image: none;
   padding-left: 0;
