@@ -1,6 +1,7 @@
 ---
 import "../../styles/components/pages/archive.css";
 import { articleSection, getArticles, homeSections } from "../../lib/articles";
+import { formatSiteDate } from "../../lib/date";
 
 const now = new Date();
 const articles = (await getArticles())
@@ -123,7 +124,7 @@ const tags = [...new Set(articles.flatMap((article) => article.data.tags))].sort
           <div class="archive-item-meta">
             {article.data.period && <span>{article.data.period}</span>}
             <time datetime={article.data.publishedAt.toISOString()}>
-              {article.data.publishedAt.toLocaleDateString("zh-CN")}
+              {formatSiteDate(article.data.publishedAt)}
             </time>
             <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
           </div>

@@ -9,6 +9,7 @@ import {
   latestPublishedPeriod,
   sectionArticle,
 } from "../../lib/articles";
+import { formatSiteDateTime } from "../../lib/date";
 
 const now = new Date();
 const articles = await getArticles();
@@ -21,15 +22,6 @@ const publishedHomeArticles = articles.filter(
 const homeArticles = currentPeriod
   ? articles.filter((article) => article.data.period === currentPeriod)
   : articles;
-const formatDateTime = (date: Date) =>
-  date.toLocaleString("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
 const cards = homeSections.map((section) => ({
   section,
   article: latestArticleForSection(homeArticles, section, now),
@@ -69,7 +61,7 @@ const defaultIndex = latestHomeIndex >= 0 ? latestHomeIndex : 0;
               <strong class="home-card-title">{article.data.title}</strong>
               <p>{article.data.summary || section.summary}</p>
               <time datetime={article.data.publishedAt.toISOString()}>
-                {formatDateTime(article.data.publishedAt)}
+                {formatSiteDateTime(article.data.publishedAt)}
               </time>
             </div>
           </a>

@@ -4,6 +4,7 @@ import "katex/dist/katex.min.css";
 import "remark-github-blockquote-alert/alert.css";
 import { render } from "astro:content";
 import { articleSection, getArticles, homeSections } from "../../lib/articles";
+import { formatSiteDateTime } from "../../lib/date";
 
 interface Props {
   section: string;
@@ -55,7 +56,7 @@ const Content = article ? (await render(article)).Content : undefined;
           {article.data.summary && <p class="article-summary">{article.data.summary}</p>}
           <time class="article-date" datetime={article.data.publishedAt.toISOString()}>
             <i class="fa-regular fa-calendar" aria-hidden="true"></i>
-            {article.data.publishedAt.toLocaleString("zh-CN")}
+            {formatSiteDateTime(article.data.publishedAt)}
           </time>
           {article.data.tags.length > 0 && (
             <div class="article-tags" aria-label="文章标签">
