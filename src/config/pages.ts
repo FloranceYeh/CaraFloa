@@ -10,9 +10,9 @@ export const pageGrid: PageConfig[] = [
   { path: "/archive", gridX: 0, gridY: 1, name: "Archive" },
   { path: "/about", gridX: 0, gridY: 2, name: "About" },
   { path: "/link", gridX: 0, gridY: 3, name: "Link" },
-
-  { path: "article", gridX: 1, gridY: 0, name: "Article" },
-  { path: "/404", gridX: 4, gridY: 4, name: "404" },
+  { path: "/article", gridX: 1, gridY: 0, name: "Article" },
+  { path: "/comments", gridX: 1, gridY: 1, name: "Comments" },
+  { path: "/404", gridX: 2, gridY: 2, name: "404" },
 ];
 
 export const getPageConfig = (path: string): PageConfig | undefined => {

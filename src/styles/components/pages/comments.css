@@ -1,0 +1,100 @@
+.comments-page {
+  box-sizing: border-box;
+  width: calc(100% - 72px);
+  height: 100%;
+  overflow: auto;
+  padding: clamp(2.5rem, 6vw, 5rem) clamp(2rem, 5vw, 4rem);
+  margin-left: 72px;
+}
+
+.comments-content {
+  width: min(860px, 100%);
+  margin: 0 auto;
+  color: var(--primary-text-color);
+}
+
+.comments-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-md);
+  margin-bottom: var(--space-2xl);
+}
+
+.comments-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--secondary-text-color);
+  font-size: 0.9375rem;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.comments-back:hover,
+.comments-back:focus-visible {
+  color: var(--primary-color);
+  transform: translateX(-3px);
+}
+
+.comments-label {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+  background: var(--primary-color-dark);
+  color: white;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.comments-section {
+  color: var(--secondary-text-color);
+  font-size: 0.9375rem;
+}
+
+.comments-header h1 {
+  max-width: 760px;
+  font-size: clamp(2rem, 5vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.comments-empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-md);
+  padding: clamp(3rem, 10vw, 6rem) var(--space-xl);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--secondary-background-color);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+
+.comments-empty > i {
+  color: var(--primary-color);
+  font-size: 2.5rem;
+}
+
+.comments-empty h2 {
+  font-size: 1.375rem;
+  font-weight: 600;
+}
+
+.comments-empty p {
+  color: var(--secondary-text-color);
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .comments-page {
+    padding: var(--space-xl) var(--space-md);
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .comments-empty {
+    padding: var(--space-2xl) var(--space-md);
+  }
+}

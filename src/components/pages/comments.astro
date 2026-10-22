@@ -1,0 +1,40 @@
+---
+import "../../styles/components/pages/comments.css";
+import { articleSection, getArticles, homeSections } from "../../lib/articles";
+
+interface Props {
+  section: string;
+  articleId: string;
+}
+
+const { section, articleId } = Astro.props;
+const article = (await getArticles()).find(
+  (candidate) =>
+    articleSection(candidate) === section &&
+    candidate.data.id === articleId &&
+    candidate.data.publishedAt.getTime() <= Date.now(),
+);
+const sectionTitle = homeSections.find((item) => item.id === section)?.title ?? section;
+---
+
+<div class="comments-page" aria-label="文章评论">
+  <div class="comments-content">
+    <header class="comments-header">
+      <span class="comments-label">COMMENTS</span>
+      {article ? (
+        <>
+          <span class="comments-section">{sectionTitle}</span>
+          <h1>{article.data.title}</h1>
+        </>
+      ) : (
+        <h1>文章不存在</h1>
+      )}
+    </header>
+
+    <section class="comments-empty" aria-live="polite">
+      <i class="fa-regular fa-comments" aria-hidden="true"></i>
+      <h2>暂时还没有评论</h2>
+      <p>这篇文章还没有评论，欢迎稍后再来看看。</p>
+    </section>
+  </div>
+</div>

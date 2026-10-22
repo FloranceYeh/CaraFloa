@@ -2,9 +2,10 @@
 import "../styles/components/page-content.css";
 
 import { menu, type MenuItem } from "@content-config/menu";
-import { pageGrid, getPageConfig, getMainPages } from "@content-config/pages";
+import { pageGrid, getMainPages, type PageConfig } from "@content-config/pages";
 import Home from "./pages/home.astro";
 import Article from "./pages/article.astro";
+import Comments from "./pages/comments.astro";
 import About from "./pages/about.astro";
 import Links from "./pages/links.astro";
 import Archive from "./pages/archive.astro";
@@ -14,11 +15,28 @@ interface Props {
   item?: MenuItem;
   section?: string;
   articleId?: string;
+  view?: "article" | "comments";
   notFound?: boolean;
 }
-const { item = menu[0], section, articleId, notFound = false } = Astro.props;
-const isArticleView = !!(section && articleId);
-const notFoundPage = getPageConfig("/404");
+const { item = menu[0], section, articleId, view = "article", notFound = false } = Astro.props;
+const isArticleView = !!(section && articleId && view === "article");
+const isCommentsView = !!(section && articleId && view === "comments");
+const normalizePagePath = (path: string) =>
+  path === "/" ? "/" : `/${path.replace(/^\/+|\/+$/g, "")}`;
+const getConfiguredPage = (path: string) =>
+  pageGrid.find((page) => normalizePagePath(page.path) === path);
+const notFoundPage = getConfiguredPage("/404");
+const articlePage = getConfiguredPage("/article");
+const commentsPage =
+  getConfiguredPage("/comments") ??
+  ({
+    path: "/comments",
+    gridX: articlePage?.gridX ?? 1,
+    gridY: (articlePage?.gridY ?? 0) + 1,
+    name: "Comments",
+  } satisfies PageConfig);
+
+const cellPosition = (page: PageConfig) => `left: ${page.gridX * 100}%; top: ${page.gridY * 100}%;`;
 
 let cameraX = 0,
   cameraY = 0;
@@ -28,13 +46,17 @@ if (notFound) {
     cameraY = notFoundPage.gridY;
   }
 } else if (isArticleView) {
-  const articlePage = getPageConfig("article");
   if (articlePage) {
     cameraX = articlePage.gridX;
     cameraY = articlePage.gridY;
   }
+} else if (isCommentsView) {
+  if (commentsPage) {
+    cameraX = commentsPage.gridX;
+    cameraY = commentsPage.gridY;
+  }
 } else {
-  const currentPage = getPageConfig(item.path);
+  const currentPage = getConfiguredPage(normalizePagePath(item.path));
   if (currentPage) {
     cameraX = currentPage.gridX;
     cameraY = currentPage.gridY;
@@ -44,7 +66,12 @@ if (notFound) {
 const mainPages = getMainPages();
 ---
 
-<main class="page-content" data-camera-x={cameraX} data-camera-y={cameraY}>
+<main
+  class="page-content"
+  data-camera-x={cameraX}
+  data-camera-y={cameraY}
+  data-return-path={isCommentsView ? `/${section}/${articleId}` : undefined}
+>
   <button class="return-button" aria-label="返回">
     <i class="fa-solid fa-chevron-left"></i>
   </button>
@@ -52,50 +79,74 @@ const mainPages = getMainPages();
   <div class="page-background">
     <canvas class="background-canvas"></canvas>
   </div>
-  <div class="page-grid" style={`--camera-x: ${cameraX}; --camera-y: ${cameraY}`}>
-    {mainPages.map((page) => {
-      const menuItem = menu.find((m) => m.path === page.path);
-      return (
+  <div class="page-grid-wrapper">
+    <div class="page-grid" style={`--camera-x: ${cameraX}; --camera-y: ${cameraY}`}>
+      {mainPages.map((page) => {
+        const menuItem = menu.find((m) => m.path === page.path);
+        return (
+          <div
+            class="page-cell"
+            data-grid-x={page.gridX}
+            data-grid-y={page.gridY}
+            data-page-path={normalizePagePath(page.path)}
+            style={cellPosition(page)}
+          >
+            {page.path === "/" ? (
+              <Home />
+            ) : page.path === "/archive" ? (
+              <Archive />
+            ) : page.path === "/about" ? (
+              <About />
+            ) : page.path === "/link" ? (
+              <Links />
+            ) : (
+              <div class="page-cell-content">
+                <div class="placeholder-card">
+                  {menuItem && <i class={menuItem.icon} aria-hidden="true"></i>}
+                  <span>{page.name}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      {articlePage && (
         <div
           class="page-cell"
-          data-grid-x={page.gridX}
-          data-grid-y={page.gridY}
-          data-page-path={page.path}
+          data-grid-x={articlePage.gridX}
+          data-grid-y={articlePage.gridY}
+          data-page-path={normalizePagePath(articlePage.path)}
+          style={cellPosition(articlePage)}
         >
-          {page.path === "/" ? (
-            <Home />
-          ) : page.path === "/archive" ? (
-            <Archive />
-          ) : page.path === "/about" ? (
-            <About />
-          ) : page.path === "/link" ? (
-            <Links />
-          ) : (
-            <div class="page-cell-content">
-              <div class="placeholder-card">
-                {menuItem && <i class={menuItem.icon} aria-hidden="true"></i>}
-                <span>{page.name}</span>
-              </div>
-            </div>
-          )}
+          {(isArticleView || isCommentsView) && <Article section={section} articleId={articleId} />}
         </div>
-      );
-    })}
+      )}
 
-    <div class="page-cell" data-grid-x="1" data-grid-y="0" data-page-path="article">
-      {isArticleView && <Article section={section} articleId={articleId} />}
+      {commentsPage && (
+        <div
+          class="page-cell"
+          data-grid-x={commentsPage.gridX}
+          data-grid-y={commentsPage.gridY}
+          data-page-path={normalizePagePath(commentsPage.path)}
+          style={cellPosition(commentsPage)}
+        >
+          {isCommentsView && <Comments section={section} articleId={articleId} />}
+        </div>
+      )}
+
+      {notFoundPage && (
+        <div
+          class="page-cell"
+          data-grid-x={notFoundPage.gridX}
+          data-grid-y={notFoundPage.gridY}
+          data-page-path={normalizePagePath(notFoundPage.path)}
+          style={cellPosition(notFoundPage)}
+        >
+          <NotFound />
+        </div>
+      )}
     </div>
-
-    {notFoundPage && (
-      <div
-        class="page-cell"
-        data-grid-x={notFoundPage.gridX}
-        data-grid-y={notFoundPage.gridY}
-        data-page-path={notFoundPage.path}
-      >
-        {notFound && <NotFound />}
-      </div>
-    )}
   </div>
 </main>
 
@@ -274,7 +325,6 @@ const mainPages = getMainPages();
   const setupPageGrid = () => {
     const content = document.querySelector<HTMLElement>(".page-content");
     const grid = document.querySelector<HTMLElement>(".page-grid");
-    const returnBtn = document.querySelector<HTMLElement>(".return-button");
     if (!content || !grid) return;
 
     const menuLinks = [...document.querySelectorAll<HTMLAnchorElement>(".menu-item[href]")];
@@ -317,37 +367,88 @@ const mainPages = getMainPages();
       }
     });
 
-    const moveCamera = (x: number, y: number, path: string, writeUrl = false) => {
+    const moveCamera = (x: number, y: number, path: string) => {
       content.dataset.cameraX = String(x);
       content.dataset.cameraY = String(y);
       grid.style.setProperty("--camera-x", String(x));
       grid.style.setProperty("--camera-y", String(y));
 
-      const menuPath = /^\/[^/]+\/[^/]+$/.test(path) ? "/" : path;
+      const menuPath = /^\/(?:comments\/)?[^/]+\/[^/]+$/.test(path) ? "/" : path;
       menuLinks.forEach((link) => {
         link.classList.toggle("active", link.pathname === menuPath);
       });
+    };
 
-      if (writeUrl && window.location.pathname !== path) {
-        history.pushState({}, "", path);
+    const navigateTo = async (
+      path: string,
+      options: { pushHistory?: boolean; returnPath?: string } = {},
+    ) => {
+      const targetPath = new URL(path, window.location.href).pathname.replace(/\/$/, "") || "/";
+      const wasOnComments = /^\/comments\/[^/]+\/[^/]+$/.test(window.location.pathname);
+      let pagePath = targetPath;
+      let cellSelector: string | undefined;
+      let contentSelector: string | undefined;
+
+      if (/^\/comments\/[^/]+\/[^/]+$/.test(targetPath)) {
+        pagePath = "/comments";
+        cellSelector = '.page-cell[data-page-path="/comments"]';
+        contentSelector = ".comments-page";
+      } else if (/^\/[^/]+\/[^/]+$/.test(targetPath) && !pageGridMap.has(targetPath)) {
+        pagePath = "/article";
+        cellSelector = '.page-cell[data-page-path="/article"]';
+        contentSelector = ".article-wrapper";
+      } else if (!pageGridMap.has(targetPath)) {
+        pagePath = "/404";
+      }
+
+      const position = pageGridMap.get(pagePath);
+      if (!position) return;
+
+      if (cellSelector && contentSelector) {
+        const cell = document.querySelector<HTMLElement>(cellSelector);
+        if (!cell) return;
+
+        if (pagePath === "/comments") {
+          content.dataset.parentReturnPath = content.dataset.returnPath || "/";
+        }
+
+        const response = await fetch(targetPath, { credentials: "same-origin" });
+        if (!response.ok) throw new Error(`Page request failed: ${response.status}`);
+        const parsed = new DOMParser().parseFromString(await response.text(), "text/html");
+        const nextContent = parsed.querySelector<HTMLElement>(contentSelector);
+        if (!nextContent) throw new Error(`Page content is missing: ${contentSelector}`);
+        cell.replaceChildren(nextContent);
+        if (contentSelector === ".article-wrapper") setupArticleToolbar(cell);
+        document.title = parsed.title;
+      }
+
+      if (options.returnPath) content.dataset.returnPath = options.returnPath;
+      else if (pagePath === "/article" && wasOnComments) {
+        content.dataset.returnPath = content.dataset.parentReturnPath || "/";
+      }
+      if (pagePath === "/404") {
+        if (!options.returnPath) content.dataset.returnPath = window.location.pathname;
+        document.title = `404 · ${document.title.split(" · ").slice(-1)[0]}`;
+      }
+      moveCamera(position.x, position.y, targetPath);
+      if (options.pushHistory && window.location.pathname !== targetPath) {
+        history.pushState({}, "", targetPath);
       }
     };
 
     menuLinks.forEach((link) => {
       link.addEventListener("click", (event) => {
         event.preventDefault();
-        const path = new URL(link.href).pathname;
-        const gridPos = pageGridMap.get(path);
-        if (gridPos) {
-          moveCamera(gridPos.x, gridPos.y, path, true);
-        }
+        navigateTo(new URL(link.href).pathname, { pushHistory: true }).catch(console.error);
       });
     });
 
     document.addEventListener("click", async (event) => {
       const target = event.target as HTMLElement;
 
-      const toolbarButton = target.closest<HTMLButtonElement>(".article-wrapper .toolbar-item");
+      const toolbarButton = target.closest<HTMLButtonElement>(
+        ".article-wrapper button.toolbar-item",
+      );
       if (toolbarButton) {
         const isTop = toolbarButton.classList.contains("to-top");
         const isBottom = toolbarButton.classList.contains("to-bottom");
@@ -366,63 +467,43 @@ const mainPages = getMainPages();
         return;
       }
 
-      const link = target.closest<HTMLAnchorElement>(
-        "a.home-card-body[href], a.archive-item[href]",
-      );
-      if (link) {
-        event.preventDefault();
-        const articlePos = pageGridMap.get("article");
-        if (!articlePos) return;
+      const internalLink = target.closest<HTMLAnchorElement>("a[href]");
+      if (
+        !internalLink ||
+        event.defaultPrevented ||
+        internalLink.target === "_blank" ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      )
+        return;
 
-        const targetUrl = link.href;
-        const targetPath = new URL(targetUrl).pathname;
-        const returnPath = link.matches("a.archive-item") ? "/archive" : "/";
-        const articleCell = document.querySelector<HTMLElement>(
-          '.page-cell[data-page-path="article"]',
-        );
-        if (!articleCell) return;
+      const targetUrl = new URL(internalLink.href, window.location.href);
+      if (targetUrl.origin !== window.location.origin) return;
 
-        try {
-          const response = await fetch(targetUrl, { credentials: "same-origin" });
-          if (!response.ok) throw new Error(`Article request failed: ${response.status}`);
-          const parsed = new DOMParser().parseFromString(await response.text(), "text/html");
-          const nextArticle = parsed.querySelector<HTMLElement>(".article-wrapper");
-          if (!nextArticle) throw new Error("Article content is missing");
-
-          articleCell.replaceChildren(nextArticle);
-          setupArticleToolbar(nextArticle);
-          content.dataset.returnPath = returnPath;
-          moveCamera(articlePos.x, articlePos.y, targetPath, false);
-          history.pushState({}, "", targetPath);
-          document.title = parsed.title;
-        } catch (error) {
-          console.error(error);
-        }
-      }
+      const targetPath = targetUrl.pathname.replace(/\/$/, "") || "/";
+      const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+      if (/\.[a-z\d]+$/i.test(targetPath)) return;
+      if (targetPath === currentPath && targetUrl.hash) return;
+      event.preventDefault();
+      const returnPath = internalLink.matches("a.archive-item")
+        ? "/archive"
+        : internalLink.matches("a.home-card-body")
+          ? "/"
+          : /^\/comments\/[^/]+\/[^/]+$/.test(targetPath)
+            ? window.location.pathname
+            : undefined;
+      navigateTo(targetPath, { pushHistory: true, returnPath }).catch(console.error);
     });
 
     const hitbox = document.querySelector<HTMLElement>(".return-button-hitbox");
     hitbox?.addEventListener("click", () => {
-      const returnPath = content.dataset.returnPath || "/";
-      const returnPos = pageGridMap.get(returnPath);
-      if (returnPos) {
-        moveCamera(returnPos.x, returnPos.y, returnPath, true);
-      }
+      navigateTo(content.dataset.returnPath || "/", { pushHistory: true }).catch(console.error);
     });
 
     window.addEventListener("popstate", () => {
-      const path = window.location.pathname;
-      if (path.match(/^\/[^/]+\/[^/]+$/)) {
-        const articlePos = pageGridMap.get("article");
-        if (articlePos) {
-          moveCamera(articlePos.x, articlePos.y, path);
-        }
-      } else {
-        const gridPos = pageGridMap.get(path);
-        if (gridPos) {
-          moveCamera(gridPos.x, gridPos.y, path);
-        }
-      }
+      navigateTo(window.location.pathname).catch(console.error);
     });
 
     const initialPath = window.location.pathname;

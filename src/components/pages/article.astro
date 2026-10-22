@@ -33,9 +33,14 @@ const Content = article ? (await render(article)).Content : undefined;
       </button>
     </div>
     <div class="lower-tools">
-      <button class="toolbar-item discuss" type="button" aria-label="讨论" title="讨论">
+      <a
+        class="toolbar-item discuss"
+        href={`/comments/${section}/${articleId}`}
+        aria-label="查看评论"
+        title="查看评论"
+      >
         <i class="fa-solid fa-message"></i>
-      </button>
+      </a>
     </div>
   </div>
 

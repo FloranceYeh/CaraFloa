@@ -1,0 +1,45 @@
+---
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import Topbar from "../../../components/topbar.astro";
+import Sidebar from "../../../components/sidebar.astro";
+import PageContent from "../../../components/page-content.astro";
+import "../../../styles/global.css";
+
+import { SiteTitle } from "@content-config/site";
+import { articleSection, getArticles } from "../../../lib/articles";
+
+export async function getStaticPaths() {
+  const articles = await getArticles();
+  return articles
+    .filter((article) => article.data.publishedAt.getTime() <= Date.now())
+    .map((article) => ({
+      params: {
+        section: articleSection(article),
+        articleId: article.data.id,
+      },
+      props: {
+        section: articleSection(article),
+        articleId: article.data.id,
+        title: article.data.title,
+      },
+    }));
+}
+
+const { section, articleId, title } = Astro.props;
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/images/carafloa_icon.svg" />
+    <title>评论：{title} · {SiteTitle}</title>
+  </head>
+  <body>
+    <div class="main-wrapper">
+      <Topbar />
+      <Sidebar />
+      <PageContent section={section} articleId={articleId} view="comments" />
+    </div>
+  </body>
+</html>

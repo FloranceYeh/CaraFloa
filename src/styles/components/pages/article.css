@@ -184,7 +184,7 @@
 
 .article-title {
   margin: 0 0 var(--space-lg) 0;
-  font-size: clamp(2rem, 6vw, 3rem);
+  font-size: clamp(2rem, 6vw, 2.5rem);
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.02em;
