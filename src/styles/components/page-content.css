@@ -4,6 +4,8 @@
   position: relative;
   isolation: isolate;
   grid-area: page;
+  overflow: hidden;
+  border-radius: var(--radius-3xl);
 }
 
 .page-background {
@@ -22,7 +24,6 @@
 }
 
 .page-grid-wrapper {
-  /* margin: var(--space-lg); */
   width: 100%;
   height: 100%;
   overflow: hidden;
