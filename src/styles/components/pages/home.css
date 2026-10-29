@@ -147,7 +147,7 @@ a.home-card-body:active {
 
 .home-card-title {
   display: block;
-  font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+  font-size: clamp(1.75rem, 4.5vw, 2.5rem);
   font-weight: 600;
   margin-bottom: var(--space-sm);
   line-height: 1.4;
@@ -220,5 +220,14 @@ a.home-card-body:active {
   }
   .home-dot {
     transition: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-card-title {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+  }
+  .home-card p {
+    font-size: 0.875rem;
   }
 }

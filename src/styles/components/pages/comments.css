@@ -27,7 +27,9 @@
   gap: var(--space-sm);
   color: var(--secondary-text-color);
   font-size: 0.9375rem;
-  transition: color var(--transition-fast), transform var(--transition-fast);
+  transition:
+    color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 .comments-back:hover,
