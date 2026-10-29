@@ -1,0 +1,228 @@
+.route-state {
+  width: min(900px, calc(100% - 2 * var(--space-2xl)));
+  height: calc(100% - 2 * var(--space-xl));
+  min-height: 280px;
+  margin: var(--space-xl);
+  margin-left: calc(var(--space-2xl) + 64px);
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: var(--space-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-2xl);
+  background: var(--secondary-background-color);
+  color: var(--secondary-text-color);
+  box-shadow: var(--shadow-md);
+}
+
+.route-state-error i {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+}
+
+.article-loading .articles {
+  pointer-events: none;
+}
+
+.article-skeleton .article-body {
+  width: 100%;
+}
+
+.skeleton-block {
+  position: relative;
+  overflow: hidden;
+  height: 1rem;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--secondary-text-color) 14%, transparent);
+}
+
+.skeleton-block::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    color-mix(in srgb, var(--primary-color) 22%, transparent) 45%,
+    transparent 70%
+  );
+  content: "";
+  transform: translateX(-100%);
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton-label {
+  width: 7rem;
+  height: 1.75rem;
+  margin-bottom: var(--space-xl);
+}
+
+.skeleton-title {
+  width: min(82%, 620px);
+  height: clamp(2rem, 6vw, 2.5rem);
+  margin-bottom: var(--space-lg);
+}
+
+.skeleton-summary {
+  width: min(92%, 720px);
+  height: 1.25rem;
+  margin-bottom: var(--space-lg);
+}
+
+.skeleton-date {
+  width: 11rem;
+  height: 0.95rem;
+  margin-bottom: var(--space-md);
+}
+
+.skeleton-tags {
+  width: 16rem;
+  height: 1.5rem;
+  margin-bottom: var(--space-2xl);
+}
+
+.skeleton-content {
+  display: grid;
+  gap: var(--space-lg);
+  margin-top: var(--space-2xl);
+}
+
+.skeleton-content .skeleton-block {
+  width: 100%;
+}
+
+.skeleton-content .skeleton-block.short {
+  width: 62%;
+}
+
+.skeleton-content .skeleton-block.heading {
+  width: 42%;
+  height: 1.5rem;
+  margin-top: var(--space-xl);
+}
+
+.comments-loading {
+  pointer-events: none;
+}
+
+.comments-skeleton-label {
+  width: 7rem;
+  height: 1.7rem;
+}
+
+.comments-skeleton-section {
+  width: 8rem;
+  height: 0.95rem;
+}
+
+.comments-skeleton-title {
+  width: min(76%, 520px);
+  height: 2.25rem;
+}
+
+.comments-loading .comments-panel {
+  min-height: 440px;
+  padding: clamp(1rem, 3vw, 2rem);
+  box-sizing: border-box;
+}
+
+.comments-skeleton-form {
+  padding-bottom: var(--space-xl);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.comments-skeleton-inputs,
+.comments-skeleton-actions {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.comments-skeleton-inputs .skeleton-block {
+  width: min(220px, 50%);
+  height: 2.5rem;
+}
+
+.comments-skeleton-editor {
+  height: 9rem;
+  margin: var(--space-md) 0;
+}
+
+.comments-skeleton-actions {
+  justify-content: space-between;
+}
+
+.comments-skeleton-actions .skeleton-block {
+  width: 5.5rem;
+  height: 2rem;
+}
+
+.comments-skeleton-actions .skeleton-block:last-child {
+  width: 6rem;
+}
+
+.comments-skeleton-list {
+  display: grid;
+}
+
+.comments-skeleton-item {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: var(--space-md);
+  padding: var(--space-lg) 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.comments-skeleton-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.comments-skeleton-comment {
+  display: grid;
+  align-content: start;
+  gap: var(--space-sm);
+  padding-top: 2px;
+}
+
+.comments-skeleton-comment .skeleton-block {
+  width: 100%;
+}
+
+.comments-skeleton-comment .comments-skeleton-name {
+  width: 7rem;
+  height: 0.85rem;
+  margin-bottom: var(--space-xs);
+}
+
+.comments-skeleton-comment .comments-skeleton-short {
+  width: 58%;
+}
+
+@keyframes skeleton-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (max-width: 768px) {
+  .route-state {
+    width: calc(100% - 2 * var(--space-md));
+    height: calc(100% - 2 * var(--space-md));
+    margin: var(--space-md);
+    min-height: 240px;
+  }
+  .comments-skeleton-inputs {
+    flex-direction: column;
+  }
+
+  .comments-skeleton-inputs .skeleton-block {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-block::after {
+    animation-duration: 2.8s;
+  }
+}

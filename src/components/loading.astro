@@ -1,0 +1,90 @@
+---
+import "../styles/components/loading.css";
+
+interface Props {
+  variant: "article" | "comments";
+}
+
+const { variant } = Astro.props;
+---
+
+{variant === "article" ? (
+  <div class="article-wrapper article-loading" aria-busy="true">
+    <div class="toolbar">
+      <div class="upper-tools">
+        <button class="toolbar-item to-top" type="button" aria-label="回到顶部">
+          <i class="fa-solid fa-arrow-up"></i>
+        </button>
+        <button class="toolbar-item to-bottom" type="button" aria-label="回到底部">
+          <i class="fa-solid fa-arrow-down"></i>
+        </button>
+      </div>
+      <div class="lower-tools">
+        <a class="toolbar-item discuss" href="/comments/" aria-label="查看评论">
+          <i class="fa-solid fa-message"></i>
+        </a>
+      </div>
+    </div>
+    <div class="articles">
+      <article class="article article-skeleton" aria-hidden="true">
+        <div class="article-body">
+          <div class="skeleton-block skeleton-label"></div>
+          <div class="skeleton-block skeleton-title"></div>
+          <div class="skeleton-block skeleton-summary"></div>
+          <div class="skeleton-block skeleton-date"></div>
+          <div class="skeleton-block skeleton-tags"></div>
+          <div class="skeleton-content">
+            <div class="skeleton-block"></div>
+            <div class="skeleton-block"></div>
+            <div class="skeleton-block short"></div>
+            <div class="skeleton-block heading"></div>
+            <div class="skeleton-block"></div>
+            <div class="skeleton-block"></div>
+            <div class="skeleton-block short"></div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+) : (
+  <div class="comments-page comments-loading" aria-busy="true" aria-label="评论加载中">
+    <div class="comments-content" aria-hidden="true">
+      <header class="comments-header">
+        <div class="skeleton-block comments-skeleton-label"></div>
+        <div class="skeleton-block comments-skeleton-section"></div>
+        <div class="skeleton-block comments-skeleton-title"></div>
+      </header>
+      <section class="comments-panel">
+        <div class="comments-skeleton-form">
+          <div class="comments-skeleton-inputs">
+            <div class="skeleton-block"></div>
+            <div class="skeleton-block"></div>
+          </div>
+          <div class="skeleton-block comments-skeleton-editor"></div>
+          <div class="comments-skeleton-actions">
+            <div class="skeleton-block"></div>
+            <div class="skeleton-block"></div>
+          </div>
+        </div>
+        <div class="comments-skeleton-list">
+          <div class="comments-skeleton-item">
+            <div class="skeleton-block comments-skeleton-avatar"></div>
+            <div class="comments-skeleton-comment">
+              <div class="skeleton-block comments-skeleton-name"></div>
+              <div class="skeleton-block"></div>
+              <div class="skeleton-block comments-skeleton-short"></div>
+            </div>
+          </div>
+          <div class="comments-skeleton-item">
+            <div class="skeleton-block comments-skeleton-avatar"></div>
+            <div class="comments-skeleton-comment">
+              <div class="skeleton-block comments-skeleton-name"></div>
+              <div class="skeleton-block"></div>
+              <div class="skeleton-block comments-skeleton-short"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+)}

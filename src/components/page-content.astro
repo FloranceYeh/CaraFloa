@@ -10,6 +10,7 @@ import About from "./pages/about.astro";
 import Links from "./pages/links.astro";
 import Archive from "./pages/archive.astro";
 import NotFound from "./pages/not-found.astro";
+import Loading from "./loading.astro";
 
 interface Props {
   item?: MenuItem;
@@ -148,6 +149,12 @@ const mainPages = getMainPages();
       )}
     </div>
   </div>
+  <template data-loading-template="article">
+    <Loading variant="article" />
+  </template>
+  <template data-loading-template="comments">
+    <Loading variant="comments" />
+  </template>
 </main>
 
 <script>
@@ -388,6 +395,7 @@ const mainPages = getMainPages();
     setupArticleToolbar(content);
 
     const pageCells = [...document.querySelectorAll<HTMLElement>(".page-cell")];
+    let navigationRequest = 0;
     const pageGridMap = new Map<string, { x: number; y: number }>();
     pageCells.forEach((cell) => {
       const path = cell.dataset.pagePath;
@@ -410,10 +418,39 @@ const mainPages = getMainPages();
       });
     };
 
+    const createErrorState = (message: string) => {
+      const state = document.createElement("div");
+      state.className = "route-state route-state-error";
+      state.setAttribute("role", "alert");
+      state.innerHTML = `<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span>${message}</span>`;
+      return state;
+    };
+
+    const setRouteState = (cell: HTMLElement, contentSelector: string, state: HTMLElement) => {
+      const currentContent = cell.querySelector<HTMLElement>(contentSelector);
+      if (currentContent) currentContent.replaceWith(state);
+      else cell.replaceChildren(state);
+    };
+
+    const cloneLoadingState = (variant: "article" | "comments", path: string) => {
+      const template = document.querySelector<HTMLTemplateElement>(
+        `template[data-loading-template="${variant}"]`,
+      );
+      const state = template?.content.firstElementChild?.cloneNode(true) as HTMLElement | undefined;
+      if (!state) throw new Error(`Loading template is missing: ${variant}`);
+      if (variant === "article") {
+        const match = path.match(/^\/([^/]+)\/([^/]+)$/);
+        const discussLink = state.querySelector<HTMLAnchorElement>(".discuss");
+        if (match && discussLink) discussLink.href = `/comments/${match[1]}/${match[2]}`;
+      }
+      return state;
+    };
+
     const navigateTo = async (
       path: string,
       options: { pushHistory?: boolean; returnPath?: string } = {},
     ) => {
+      const requestId = ++navigationRequest;
       const targetPath = new URL(path, window.location.href).pathname.replace(/\/$/, "") || "/";
       const wasOnComments = /^\/comments\/[^/]+\/[^/]+$/.test(window.location.pathname);
       let pagePath = targetPath;
@@ -442,18 +479,12 @@ const mainPages = getMainPages();
         if (pagePath === "/comments") {
           content.dataset.parentReturnPath = content.dataset.returnPath || "/";
         }
-
-        const response = await fetch(targetPath, { credentials: "same-origin" });
-        if (!response.ok) throw new Error(`Page request failed: ${response.status}`);
-        const parsed = new DOMParser().parseFromString(await response.text(), "text/html");
-        const nextContent = parsed.querySelector<HTMLElement>(contentSelector);
-        if (!nextContent) throw new Error(`Page content is missing: ${contentSelector}`);
-        cell.replaceChildren(nextContent);
-        if (contentSelector === ".article-wrapper") setupArticleToolbar(cell);
-        if (pagePath === "/comments") {
-          window.dispatchEvent(new CustomEvent("waline:mount", { detail: cell }));
+        if (contentSelector === ".article-wrapper") {
+          cell.replaceChildren(cloneLoadingState("article", targetPath));
+          setupArticleToolbar(cell);
+        } else {
+          setRouteState(cell, contentSelector, cloneLoadingState("comments", targetPath));
         }
-        document.title = parsed.title;
       }
 
       if (options.returnPath) content.dataset.returnPath = options.returnPath;
@@ -467,6 +498,33 @@ const mainPages = getMainPages();
       moveCamera(position.x, position.y, targetPath);
       if (options.pushHistory && window.location.pathname !== targetPath) {
         history.pushState({}, "", targetPath);
+      }
+
+      if (!cellSelector || !contentSelector) return;
+
+      const cell = document.querySelector<HTMLElement>(cellSelector);
+      if (!cell) return;
+
+      try {
+        const response = await fetch(targetPath, { credentials: "same-origin" });
+        if (!response.ok) throw new Error(`Page request failed: ${response.status}`);
+        const parsed = new DOMParser().parseFromString(await response.text(), "text/html");
+        const nextContent = parsed.querySelector<HTMLElement>(contentSelector);
+        if (!nextContent) throw new Error(`Page content is missing: ${contentSelector}`);
+        if (requestId !== navigationRequest) return;
+        cell.replaceChildren(nextContent);
+        if (contentSelector === ".article-wrapper") setupArticleToolbar(cell);
+        if (pagePath === "/comments") {
+          window.dispatchEvent(new CustomEvent("waline:mount", { detail: cell }));
+        }
+        document.title = parsed.title;
+      } catch (error) {
+        if (requestId !== navigationRequest) return;
+        const message =
+          error instanceof Error && error.message.includes("Page request")
+            ? "页面加载失败，请稍后重试"
+            : "页面内容暂时不可用";
+        setRouteState(cell, contentSelector, createErrorState(message));
       }
     };
 
