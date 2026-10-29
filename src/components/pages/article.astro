@@ -26,10 +26,10 @@ const Content = article ? (await render(article)).Content : undefined;
 <div class="article-wrapper">
   <div class="toolbar">
     <div class="upper-tools">
-      <button class="toolbar-item to-top" type="button" aria-label="回到顶部" title="回到顶部">
+      <button class="toolbar-item to-top" type="button" aria-label="回到顶部">
         <i class="fa-solid fa-arrow-up"></i>
       </button>
-      <button class="toolbar-item to-bottom" type="button" aria-label="回到底部" title="回到底部">
+      <button class="toolbar-item to-bottom" type="button" aria-label="回到底部">
         <i class="fa-solid fa-arrow-down"></i>
       </button>
     </div>
@@ -38,7 +38,6 @@ const Content = article ? (await render(article)).Content : undefined;
         class="toolbar-item discuss"
         href={`/comments/${section}/${articleId}`}
         aria-label="查看评论"
-        title="查看评论"
       >
         <i class="fa-solid fa-message"></i>
       </a>
